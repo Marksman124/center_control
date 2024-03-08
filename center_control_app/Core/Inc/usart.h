@@ -82,7 +82,7 @@ extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN Private defines */
 //****************  Ó³Éä ²ÎÊý
 extern uint16_t* p_Modbus_BaudRate;
-extern uint32_t Usart_BaudRate_Table[];
+extern uint32_t Modbus_BaudRate_Table[];
 
 /* USER CODE END Private defines */
 

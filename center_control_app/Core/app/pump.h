@@ -52,11 +52,13 @@ extern uint16_t Voltage_Pump_2;
 #define AGREEMENT_VOLTAGE_PUMP_MAX					( 4095 )
 /* USER CODE BEGIN Prototypes */
 
-/************* ≤‚ ‘”√ ***************************/
-extern void Test_pump_output(void);
+
 /************************************************/
 extern void Call_PUMP_Handle_Init(void);
 extern void Call_PUMP_Handle_Task(void);
+
+/************* ≤‚ ‘”√ ***************************/
+extern void PUMP_Hardware_Debug(void);
 
 /* USER CODE END Prototypes */
 

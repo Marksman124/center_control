@@ -99,12 +99,21 @@ void led_show(uint16_t num, uint16_t time)
 	}
 }
 
+void led_on(void)
+{
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+}
+
+
+void led_off(void)
+{
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+}
+	
+
 void StartUp_KA1(uint16_t para)
 {
 	// PB12~ PB15
-
-	if(para > GEAR_MAX)
-		return;
 	
 	switch(para){
 		case 0:
@@ -137,6 +146,17 @@ void StartUp_KA1(uint16_t para)
 			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_15,GPIO_PIN_SET);
 		break;
+		default:
+#ifdef SYSTEM_HARDWARE_DEBUG
+		if(para == 0xFF)
+		{
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_13,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_15,GPIO_PIN_SET);
+		}
+#endif
+			break;
 	}
 }
 
@@ -144,9 +164,6 @@ void StartUp_KA1(uint16_t para)
 void StartUp_KA2(uint16_t para)
 {
 	// PC6~ PC9
-
-	if(para > GEAR_MAX)
-		return;
 	
 	switch(para){
 		case 0:
@@ -179,6 +196,17 @@ void StartUp_KA2(uint16_t para)
 			HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,GPIO_PIN_SET);
 		break;
+		default:
+#ifdef SYSTEM_HARDWARE_DEBUG
+		if(para == 0xFF)
+		{
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_13,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_15,GPIO_PIN_SET);
+		}
+#endif
+			break;
 	}
 }
 /* USER CODE END 2 */

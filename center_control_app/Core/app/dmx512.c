@@ -225,8 +225,7 @@ uint8_t Dmx512_Get_polling_cnt(uint8_t cnt)
 void Dmx512_Protocol_Analysis(void)
 {
 #ifdef DMX512_HUART
-//	uint16_t addr = 0;
-//	uint16_t i = 0;
+
 	if(Get_Dmx512_Data_Change() == 1)
 	{
 		Dmx512_Send(p_Dmx512_TxBuff, *p_Dmx512_DataLen );
@@ -237,5 +236,23 @@ void Dmx512_Protocol_Analysis(void)
 }
 
 
+void Dmx512_Hardware_Debug(void)
+{
+	uint16_t i,time;
+	
+	for(time=0; time<4; time++)
+	{
+		for(i=0; i<DMX512_RS485_TX_BUFF_SIZE; i++)
+		{
+			if( (i%4) == time)
+				*(p_Dmx512_TxBuff + i) = 0xFF;
+			else
+				*(p_Dmx512_TxBuff + i) = 0;
+		}
+		Dmx512_Send(p_Dmx512_TxBuff, DMX512_RS485_TX_BUFF_SIZE );
 
+		osDelay(2000);//2Ãë
+		
+	}
+}
 

@@ -40,6 +40,9 @@ void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 extern void led_show(uint16_t num, uint16_t time);
+extern void led_on(void);
+extern void led_off(void);
+	
 extern void StartUp_KA1(uint16_t para);
 extern void StartUp_KA2(uint16_t para);
 

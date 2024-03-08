@@ -46,6 +46,8 @@ extern "C" {
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
+#define SYSTEM_HARDWARE_DEBUG					1
+
 /* USER CODE BEGIN EM */
 // 串口1 --> 计量模块(485)
 // 串口2 --> 核心板(485)
@@ -56,6 +58,7 @@ extern "C" {
 #define	METERING_MODULE_HUART				1		//(A1)
 #define	DMX512_HUART								4 	//(A2)
 
+#define	SYSTEM_USER_USART_MAX				5
 
 #define THREAD_PERIOD_MODBUS_USART								100
 #define THREAD_PERIOD_MAIN_PUMP_TASK							10

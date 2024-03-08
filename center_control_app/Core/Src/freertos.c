@@ -26,7 +26,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "iap.h"
-//#include "wwdg.h"
 #include "iwdg.h"
 #include "gpio.h"
 #include "pump.h"
@@ -199,14 +198,17 @@ void Main_Handler(void const * argument)
   /* USER CODE BEGIN Main_Handler */
 	
 	Call_PUMP_Handle_Init();
-	Set_Software_Version(0x000A0001);
+	//Set_Software_Version(0x000A0001);
   /* Infinite loop */
   while(1)
   {
 		HAL_IWDG_Refresh(&hiwdg);
-
+#ifdef SYSTEM_HARDWARE_DEBUG
+		PUMP_Hardware_Debug();
+#else
 		Call_PUMP_Handle_Task();
-    osDelay(THREAD_PERIOD_MAIN_PUMP_TASK);
+#endif
+		osDelay(THREAD_PERIOD_MAIN_PUMP_TASK);
   }
   /* USER CODE END Main_Handler */
 }

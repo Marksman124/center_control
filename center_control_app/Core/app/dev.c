@@ -17,37 +17,46 @@
 
 //FLASH_ProcessTypeDef p_Flash; 
 uint16_t* p_Local_Address;			//	本地地址
-uint16_t* p_Baud_Rate;					//	波特率
 uint32_t* p_Software_Version;		//	软件版本
 
-uint16_t* p_Metering_Baud_Rate;					//	波特率
+//与上位机modbus
+uint16_t* p_Baud_Rate;							//	波特率
+uint32_t Modbus_BaudRate_Table[] = 	{0,4800,9600,19200,115200};
+#define MODBUS_BAUDRATE_TABLE_LEN		(sizeof(Modbus_BaudRate_Table)/sizeof(Modbus_BaudRate_Table[0]))
+#define MODBUS_BAUDRATE_DEFAULT			4
 
-uint32_t Usart_BaudRate_Table[] = {0,2400,4800,9600,57600,115200};
-#define BAUDRATE_TABLE_LEN	(sizeof(Usart_BaudRate_Table)/sizeof(Usart_BaudRate_Table[0]))
-#define BAUDRATE_DEFAULT	3
+//电表 modbus
+uint16_t* p_Metering_Baud_Rate;				//	波特率
+uint32_t Metering_BaudRate_Table[] = 	{1200,2400,4800,9600};
+#define METERING_BAUDRATE_TABLE_LEN		(sizeof(Metering_BaudRate_Table)/sizeof(Metering_BaudRate_Table[0]))
+#define METERING_BAUDRATE_DEFAULT			3
 
 
 uint32_t Dev_BaudRate_Get(uint8_t usart_num)
 {
-	uint32_t all_usart_baudrate_table[] = {9600,115200,9600,250000,9600,9600};//U1 ~ U5 默认波特率
+	uint32_t all_usart_baudrate_table[SYSTEM_USER_USART_MAX] = {9600,115200,9600,250000,9600};//U1 ~ U5 默认波特率
 	
-	if(usart_num == MODBUS_USART)// modbus
+	if(usart_num == MODBUS_USART)	// modbus
 	{
-		if( (*p_Baud_Rate >= BAUDRATE_TABLE_LEN) || (*p_Baud_Rate == 0) )
+		if( (*p_Baud_Rate >= MODBUS_BAUDRATE_TABLE_LEN) || (*p_Baud_Rate == 0) )
 		{
-			*p_Baud_Rate = 5;// 默认 115200
+			*p_Baud_Rate = MODBUS_BAUDRATE_DEFAULT;	// 默认 115200
 		}
-		return Usart_BaudRate_Table[*p_Baud_Rate];
+		return Modbus_BaudRate_Table[*p_Baud_Rate];
 	}
-	else if(usart_num == METERING_MODULE_HUART)// metering
+	else if(usart_num == METERING_MODULE_HUART)	// metering
 	{
-		if( (*p_Metering_Baud_Rate >= BAUDRATE_TABLE_LEN) || (*p_Metering_Baud_Rate == 0) )
+		if( (*p_Metering_Baud_Rate >= METERING_BAUDRATE_TABLE_LEN) || (*p_Metering_Baud_Rate == 0) )
 		{
-			*p_Metering_Baud_Rate = BAUDRATE_DEFAULT;// 默认值
+			*p_Metering_Baud_Rate = METERING_BAUDRATE_DEFAULT;	// 默认值
 		}
-		return Usart_BaudRate_Table[*p_Metering_Baud_Rate];
+		return Metering_BaudRate_Table[*p_Metering_Baud_Rate];
 	}
-	else if((usart_num >= 1) && (usart_num <= 5))
+	else if(usart_num == DMX512_HUART)	// DMX512
+	{
+		return 250000;
+	}
+	else if( (usart_num <= SYSTEM_USER_USART_MAX) && (usart_num > 0) )
 	{
 		return all_usart_baudrate_table[usart_num -1];
 	}
@@ -63,7 +72,7 @@ void Dev_Information_Init(void)
 	p_Baud_Rate = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_BAUD_RATE);
 	Dev_BaudRate_Get(MODBUS_USART);
 	
-	p_Software_Version = (uint32_t*)Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_LOW);
+	p_Software_Version = (uint32_t*)Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_HIGH);
 	
 	p_Metering_Baud_Rate = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_METERING_MODULE_BAUD);
 	Dev_BaudRate_Get(METERING_MODULE_HUART);

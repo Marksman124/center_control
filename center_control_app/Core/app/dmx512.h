@@ -49,7 +49,7 @@ extern void Dmx512_Receive_Init(void);
 extern void Dmx512_Protocol_Analysis(void);
 
 
-
+extern void Dmx512_Hardware_Debug(void);
 
 
 #ifdef __cplusplus

@@ -171,8 +171,8 @@ void MX_USART2_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
-	uint32_t baud_rate=0;
-	baud_rate = Dev_BaudRate_Get(2);
+//	uint32_t baud_rate=0;
+//	baud_rate = Dev_BaudRate_Get(2);
   /* USER CODE END USART2_Init 0 */
 
   /* USER CODE BEGIN USART2_Init 1 */

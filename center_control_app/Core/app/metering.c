@@ -241,7 +241,6 @@ void Metering_RxData(uint8_t len)
 	uint16_t metering_addr;//ÉÏ²ãmodbusµÄ¼Ä´æÆ÷µØÖ·
 	IntUint value_data;
 	FloatUint float_uint;
-	float m;
 	
 #ifdef METERING_MODULE_HUART
 	
@@ -258,8 +257,6 @@ void Metering_RxData(uint8_t len)
 			float_uint.c[2] = Metering_DMABuff[4];
 			float_uint.c[3] = Metering_DMABuff[3];
 
-			//m = (float_int.f * InputAddrTable[(*p_Connection_Mode)-1][Metering_PERIODIC_CNT][2]);
-			//value_data = (uint32_t)(m);
 			value_data.i = (int)(float_uint.f * InputAddrTable[(*p_Connection_Mode)-1][Metering_PERIODIC_CNT][2]);
 			
 			Set_DataAddr_Value( write_function, write_addr, value_data.c>>16 );
@@ -355,7 +352,6 @@ uint16_t Metering_Get_polling_cnt(uint16_t cnt)
 		return result;
 	
 	sum = INPUT_TABLE_LEN;
-	result = 0xFFFF;
 	
 	if((cnt + 1) >= sum)
 		result = 0;

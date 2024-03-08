@@ -36,19 +36,10 @@ uint16_t Current_Pump_2;
 uint16_t Voltage_Pump_1;
 uint16_t Voltage_Pump_2;
 
-void Test_pump_output(void)
-{
-	*p_Gear_Pump_1 = 2;	// K1 0~4
-	*p_Gear_Pump_2 = 4;	// K2
+#ifdef SYSTEM_HARDWARE_DEBUG
 
-	*p_Current_Pump_1 = 100;	// 0~100
-	*p_Current_Pump_2 = 50;
-
-	*p_Voltage_Pump_1 = 4095;	// 0~4095
-	*p_Voltage_Pump_2 = 409;
-	
-}
-
+static uint16_t Pump_Hardware_Debug_Cnt=0;
+#endif
 
 void Call_PUMP_Handle_Init(void)
 {
@@ -61,7 +52,6 @@ void Call_PUMP_Handle_Init(void)
 	p_Voltage_Pump_1 = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_VOLTAGE_PUMP_1);
 	p_Voltage_Pump_2 = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_VOLTAGE_PUMP_2);
 	
-	Test_pump_output();
 }
 
 
@@ -162,3 +152,48 @@ void Call_PUMP_Handle_Task(void)
 	
 	Call_Gear_Pump();
 }
+
+
+
+void PUMP_Hardware_Debug(void)
+{
+	
+	if( Pump_Hardware_Debug_Cnt == 200)
+	{
+		StartUp_PWM1(AGREEMENT_CURRENT_PUMP_MAX/2);
+		StartUp_PWM2(AGREEMENT_CURRENT_PUMP_MAX/2);
+		
+		StartUp_DAC1(AGREEMENT_VOLTAGE_PUMP_MAX/2);
+		StartUp_DAC2(AGREEMENT_VOLTAGE_PUMP_MAX/2);
+		
+		StartUp_KA1(0xFF);
+		StartUp_KA2(0xFF);
+	}
+	else if( Pump_Hardware_Debug_Cnt == 400)
+	{
+		StartUp_PWM1(AGREEMENT_CURRENT_PUMP_MAX);
+		StartUp_PWM2(AGREEMENT_CURRENT_PUMP_MAX);
+		
+		StartUp_DAC1(AGREEMENT_VOLTAGE_PUMP_MAX);
+		StartUp_DAC2(AGREEMENT_VOLTAGE_PUMP_MAX);
+		
+		StartUp_KA1(0xFF);
+		StartUp_KA2(0xFF);
+	}
+	else if( Pump_Hardware_Debug_Cnt == 0)
+	{
+		StartUp_PWM1(0);
+		StartUp_PWM2(0);
+		
+		StartUp_DAC1(0);
+		StartUp_DAC2(0);
+		
+		StartUp_KA1(0);
+		StartUp_KA2(0);
+	}
+	
+	if(++Pump_Hardware_Debug_Cnt > 599)
+		Pump_Hardware_Debug_Cnt = 0;
+}
+
+

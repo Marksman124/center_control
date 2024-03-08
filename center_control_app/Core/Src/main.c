@@ -79,6 +79,7 @@ int main(void)
 	SCB->VTOR = FLASH_BASE | 0x8000;
 	__enable_irq();
 	HAL_DeInit();
+	
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
