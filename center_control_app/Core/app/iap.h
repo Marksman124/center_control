@@ -16,7 +16,7 @@
 
 typedef  void (*iapfun)(void);				//定义一个函数类型的参数.
 
-#define FLASH_ADDR_OFFSET_SIZE			(32)  					// 每个数据存储偏移量  好像要32倍数
+#define FLASH_ADDR_OFFSET_SIZE			(4)  					// 每个数据存储偏移量
 
 #define FLASH_APP_PROGRAM_ADDR			(0x08008000)  	// app 程序 起始地址(存放在FLASH)
 #define FLASH_APP_PROGRAM_PAGE			(56)  					// app 程序升级包 大小 (页数 n*2048)

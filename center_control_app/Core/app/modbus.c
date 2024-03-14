@@ -51,6 +51,7 @@ MB_DATA_ADDR_METERING_MODULE_FORMAT,REG_DATA_ADDR_DMX512_LENTH,REG_DATA_ADDR_DMX
 
 BOOL Dmx512_Data_Change_Sign =0;
 /* ----------------------- Start implementation -----------------------------*/
+extern TIM_HandleTypeDef htim1;
 
 void Clean_ModbusTimerCnt()
 {
@@ -240,10 +241,10 @@ eMBRegFileCB( UCHAR * pucRegBuffer, USHORT fileNumber, USHORT fileLength,
 		case MB_REG_WRITE:
 			if(fileNumber == REG_FILE_NUMBER_STAR) // 起始包
 			{OTA_Pack_Len = 0;}
-			
+						
 			write_addr = (FLASH_APP_PATCH_ADDR + OTA_Pack_Len);
 			iap_write_appbin(write_addr,pucRegBuffer,fileLength);
-			OTA_Pack_Len += fileLength;
+			OTA_Pack_Len += (fileLength*2);
 			
 			if(fileNumber == REG_FILE_NUMBER_END)//最后一帧
 			{
@@ -251,6 +252,7 @@ eMBRegFileCB( UCHAR * pucRegBuffer, USHORT fileNumber, USHORT fileLength,
 				STMFLASH_Write(BOOT_FLASH_ADDR_OTA_PACK_LEN,(uint16_t*)&OTA_Pack_Len,2); // 写包长度 (含crc)
 				sign = PRODUCT_BOOT_PASSWORD;
 				STMFLASH_Write(BOOT_FLASH_ADDR_OTA_PASSWORD,(uint16_t*)&sign,2); // 进入OTA 
+
 				SysSoftReset();// 软件复位
 			}
 			break;
@@ -354,7 +356,7 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
 void Modbus_Init(void)
 {
 	
-	eMBInit( MB_RTU, 0xAA, 0, 9600, MB_PAR_ODD);//初始化modbus，走modbusRTU，从站地址为0xAA，串口为2。
+	eMBInit( MB_RTU, 0xAA, 0, 115200, MB_PAR_ODD);//初始化modbus，走modbusRTU，从站地址为0xAA，串口为2。
 	eMBEnable(  );//使能modbus
 	
 }

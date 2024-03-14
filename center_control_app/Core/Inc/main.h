@@ -46,7 +46,7 @@ extern "C" {
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
-#define SYSTEM_HARDWARE_DEBUG					1
+//#define SYSTEM_HARDWARE_DEBUG					1			// 硬件调试模式
 
 /* USER CODE BEGIN EM */
 // 串口1 --> 计量模块(485)
@@ -54,7 +54,7 @@ extern "C" {
 // 串口3 --> 预留(232)
 // 串口4 --> DMX512(485)
 // 串口5 --> 预留(232)
-#define MODBUS_USART								2		//2  //(A3)  3和5备用
+#define MODBUS_USART								2		//2  //(A3)  3备用
 #define	METERING_MODULE_HUART				1		//(A1)
 #define	DMX512_HUART								4 	//(A2)
 
@@ -64,6 +64,9 @@ extern "C" {
 #define THREAD_PERIOD_MAIN_PUMP_TASK							10
 #define	THREAD_PERIOD_METERING_MODULE_HUART				500
 #define	THREAD_PERIOD_DMX512_HUART								50
+
+
+#define	SOFTWARE_VERSION_UINT32								0x000B0002
 
 /* USER CODE END EM */
 

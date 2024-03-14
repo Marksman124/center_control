@@ -179,7 +179,7 @@ void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;//先写死,等待app适配  wuqingguang
+  huart2.Init.BaudRate = 115200;		//app未适配波特率,先强制写入115200 wuqingguang
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_2;
   huart2.Init.Parity = UART_PARITY_NONE;

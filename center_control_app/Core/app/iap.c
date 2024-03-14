@@ -29,8 +29,8 @@ void iap_write_appbin(uint32_t appxaddr,uint8_t *appbuf,uint32_t appsize)
 	uint32_t fwaddr=appxaddr;//当前写入的地址
 	uint8_t *dfu=appbuf;
 	portDISABLE_INTERRUPTS();			//关闭中断
-	for(t=0;t<appsize;t+=2)
-	{						    
+	for(t=0;t<appsize;t++)
+	{
 		temp=(uint16_t)dfu[1]<<8;
 		temp+=(uint16_t)dfu[0];	  
 		dfu+=2;//偏移2个字节

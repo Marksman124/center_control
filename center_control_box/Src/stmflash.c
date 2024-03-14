@@ -3,7 +3,7 @@
 #include "stmflash.h"
 #include "stdint.h"  
 	
- extern void    FLASH_PageErase(uint32_t PageAddress);
+extern void    FLASH_PageErase(uint32_t PageAddress);
  
 //读取指定地址的半字(16位数据)
 //faddr:读地址(此地址必须为2的倍数!!)

@@ -28,7 +28,8 @@ typedef __IO uint16_t vu16;
 
 extern uint16_t* p_Local_Address;			//	本地地址
 extern uint16_t* p_Baud_Rate;					//	波特率
-extern uint32_t* p_Software_Version;		//	软件版本
+extern uint16_t* p_Software_Version_high;		//	软件版本
+extern uint16_t* p_Software_Version_low;		//	软件版本 低
 
 uint32_t Dev_BaudRate_Get(uint8_t usart_num);
 extern void Dev_Information_Init(void);

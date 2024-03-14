@@ -17,7 +17,8 @@
 
 //FLASH_ProcessTypeDef p_Flash; 
 uint16_t* p_Local_Address;			//	本地地址
-uint32_t* p_Software_Version;		//	软件版本
+uint16_t* p_Software_Version_high;		//	软件版本
+uint16_t* p_Software_Version_low;		//	软件版本 低
 
 //与上位机modbus
 uint16_t* p_Baud_Rate;							//	波特率
@@ -34,11 +35,12 @@ uint32_t Metering_BaudRate_Table[] = 	{1200,2400,4800,9600};
 
 uint32_t Dev_BaudRate_Get(uint8_t usart_num)
 {
-	uint32_t all_usart_baudrate_table[SYSTEM_USER_USART_MAX] = {9600,115200,9600,250000,9600};//U1 ~ U5 默认波特率
+	uint32_t all_usart_baudrate_table[SYSTEM_USER_USART_MAX] = {9600,115200,115200,250000,9600};//U1 ~ U5 默认波特率
 	
 	if(usart_num == MODBUS_USART)	// modbus
 	{
-		if( (*p_Baud_Rate >= MODBUS_BAUDRATE_TABLE_LEN) || (*p_Baud_Rate == 0) )
+		// 先写死 115200 wuqingguang
+		//if( (*p_Baud_Rate >= MODBUS_BAUDRATE_TABLE_LEN) || (*p_Baud_Rate == 0) )
 		{
 			*p_Baud_Rate = MODBUS_BAUDRATE_DEFAULT;	// 默认 115200
 		}
@@ -72,7 +74,8 @@ void Dev_Information_Init(void)
 	p_Baud_Rate = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_BAUD_RATE);
 	Dev_BaudRate_Get(MODBUS_USART);
 	
-	p_Software_Version = (uint32_t*)Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_HIGH);
+	p_Software_Version_high = Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_HIGH);//	软件版本
+	p_Software_Version_low = Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_LOW);
 	
 	p_Metering_Baud_Rate = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_METERING_MODULE_BAUD);
 	Dev_BaudRate_Get(METERING_MODULE_HUART);
@@ -91,7 +94,11 @@ uint16_t Read_Baud_Rate(void)
 
 uint32_t Read_Software_Version(void)
 {
-	return *p_Software_Version;
+	uint32_t version=0;
+	
+	version = (*p_Software_Version_high)<<16 | (*p_Software_Version_low);
+
+	return version;
 }
 
 void Set_Local_Address(uint16_t addr)
@@ -112,7 +119,9 @@ void Set_Baud_Rate(uint16_t rate)
 
 void Set_Software_Version(uint32_t version)
 {
-	*p_Software_Version = version;
+	*p_Software_Version_high = version>>16;
+	*p_Software_Version_low = version;
+	
 	// 写flash
 	//STMFLASH_Write(USER_FLASH_ADDR_SOFTWARE_VERSION, (uint16_t*)p_Software_Version, 2);
 	MB_Flash_Buffer_Write();

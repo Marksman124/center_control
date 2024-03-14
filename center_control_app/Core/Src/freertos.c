@@ -182,6 +182,9 @@ void SOC_Monitor_Handler(void const * argument)
 		Modbus_Handle_Task();
 		
     osDelay(THREAD_PERIOD_MODBUS_USART);
+#ifndef SYSTEM_HARDWARE_DEBUG
+            led_off();
+#endif
   }
   /* USER CODE END SOC_Monitor_Handler */
 }
@@ -198,7 +201,7 @@ void Main_Handler(void const * argument)
   /* USER CODE BEGIN Main_Handler */
 	
 	Call_PUMP_Handle_Init();
-	//Set_Software_Version(0x000A0001);
+	Set_Software_Version(SOFTWARE_VERSION_UINT32);
   /* Infinite loop */
   while(1)
   {

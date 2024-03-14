@@ -157,7 +157,7 @@ void Call_PUMP_Handle_Task(void)
 
 void PUMP_Hardware_Debug(void)
 {
-	
+#ifdef SYSTEM_HARDWARE_DEBUG
 	if( Pump_Hardware_Debug_Cnt == 200)
 	{
 		StartUp_PWM1(AGREEMENT_CURRENT_PUMP_MAX/2);
@@ -194,6 +194,8 @@ void PUMP_Hardware_Debug(void)
 	
 	if(++Pump_Hardware_Debug_Cnt > 599)
 		Pump_Hardware_Debug_Cnt = 0;
+		
+#endif
 }
 
 

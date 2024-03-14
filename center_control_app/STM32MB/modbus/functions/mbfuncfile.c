@@ -42,13 +42,13 @@
 
 
 /* ----------------------- Defines ------------------------------------------*/
-
-#define MB_PDU_FUNC_WRITE_FILE_DATA_LEN_OFF      ( MB_PDU_DATA_OFF + 0 )
-#define MB_PDU_FUNC_WRITE_FILE_TYPE_OFF        	 ( MB_PDU_DATA_OFF + 1 )
-#define MB_PDU_FUNC_WRITE_FILE_NUMBER_OFF        ( MB_PDU_DATA_OFF + 2 )
-#define MB_PDU_FUNC_WRITE_FILE_RECORD_OFF        ( MB_PDU_DATA_OFF + 4 )
-#define MB_PDU_FUNC_WRITE_FILE_LENTH_OFF         ( MB_PDU_DATA_OFF + 6 )
-#define MB_PDU_FUNC_WRITE_FILE_WRITE_VALUES_OFF  ( MB_PDU_DATA_OFF + 8 )
+//#define MB_PDU_FUNC_WRITE_FILE_ADDR_OFF						( MB_PDU_DATA_OFF + 0 )
+#define MB_PDU_FUNC_WRITE_FILE_DATA_LEN_OFF      	( MB_PDU_DATA_OFF + 0 )
+#define MB_PDU_FUNC_WRITE_FILE_TYPE_OFF        	 	( MB_PDU_DATA_OFF + 1 )
+#define MB_PDU_FUNC_WRITE_FILE_NUMBER_OFF        	( MB_PDU_DATA_OFF + 2 )
+#define MB_PDU_FUNC_WRITE_FILE_RECORD_OFF        	( MB_PDU_DATA_OFF + 4 )
+#define MB_PDU_FUNC_WRITE_FILE_LENTH_OFF         	( MB_PDU_DATA_OFF + 6 )
+#define MB_PDU_FUNC_WRITE_FILE_WRITE_VALUES_OFF  	( MB_PDU_DATA_OFF + 8 )
 #define MB_PDU_FUNC_WRITE_FILE_REF_TYPE          	( 6 )
 #define MB_PDU_FUNC_WRITE_FILE_NUMBER        			( 0x0001 )
 #define MB_PDU_FUNC_WRITE_FILE_REPLY_LEN        	( 9 )

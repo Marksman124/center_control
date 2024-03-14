@@ -4,6 +4,7 @@
 #include "stmflash.h"
 #include "crc.h"
 #include "gpio.h"
+#include "mbcrc.h"
 //#include "wwdg.h"
 
 
@@ -58,12 +59,18 @@ void iap_load_app(uint32_t appxaddr)
 uint8_t Check_Pack_CRC(void)
 {
 	uint32_t len_sum=0;
-	uint16_t crc_read, crc_calculate;
+	static uint16_t crc_read, crc_calculate;
 	
 	len_sum = *(uint32_t *)BOOT_FLASH_ADDR_OTA_PACK_LEN;
-	crc_read = *(uint32_t *)(FLASH_APP_PATCH_ADDR + len_sum - 2);
+	if( ( len_sum < RANGE_OTA_PACK_LEN_MIN ) || ( len_sum > RANGE_OTA_PACK_LEN_MAX  ))
+	{
+		return 0;
+	}
+	crc_read = *(uint8_t*)(FLASH_APP_PATCH_ADDR + len_sum - 2)<<8 | *(uint8_t*)(FLASH_APP_PATCH_ADDR + len_sum - 1);
 
-	crc_calculate = HAL_CRC_Accumulate(&hcrc, (uint32_t *)FLASH_APP_PATCH_ADDR, len_sum-2);
+	crc_calculate = usMBCRC16( ( uint8_t * ) FLASH_APP_PATCH_ADDR, len_sum-2 );
+	//crc_calculate = HAL_CRC_Accumulate(&hcrc, (uint32_t *)FLASH_APP_PATCH_ADDR, len_sum-2);
+	
 	if(crc_read == crc_calculate)
 	{
 		return 1;
@@ -74,7 +81,6 @@ uint8_t Check_Pack_CRC(void)
 ////Éý¼¶
 void iap_Process(void)
 {
-	//uint16_t buff[1024];//»º³å
 	uint8_t i=0;
 	uint32_t writeAddr=0,readAddr=0;
 	uint32_t sign=0;

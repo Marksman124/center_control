@@ -16,7 +16,8 @@
 
 typedef  void (*iapfun)(void);				//定义一个函数类型的参数.
 
-#define FLASH_ADDR_OFFSET_SIZE			(32)  					// 每个数据存储偏移量  好像要32倍数
+#define FLASH_ADDR_OFFSET_SIZE			(4)  					// 每个数据存储偏移量
+#define STM_FLASH_SECTOR_SIZE				(2048)
 
 #define FLASH_APP_PROGRAM_ADDR			(0x08008000)  	// app 程序 起始地址(存放在FLASH)
 #define FLASH_APP_PROGRAM_PAGE			(56)  					// app 程序升级包 大小 (页数 n*2048)
@@ -35,7 +36,10 @@ typedef  void (*iapfun)(void);				//定义一个函数类型的参数.
 #define BOOT_FLASH_ADDR_OTA_PASSWORD						(FLASH_BOOT_PARAM_ADDR)			//	OTA标识
 #define BOOT_FLASH_ADDR_OTA_PACK_LEN						(FLASH_BOOT_PARAM_ADDR + FLASH_ADDR_OFFSET_SIZE)		//	包长度
 
-#define RECORD_LEN_PAGE_MAX		238
+#define RANGE_OTA_PACK_LEN_MIN						(10 * STM_FLASH_SECTOR_SIZE)		//	包长度 最小
+#define RANGE_OTA_PACK_LEN_MAX						(FLASH_APP_PROGRAM_PAGE * STM_FLASH_SECTOR_SIZE)		//	包长度 最大
+
+//#define RECORD_LEN_PAGE_MAX		238
 
 #define PRODUCT_APP_PASSWORD 				(0xFee1Dead)  	// feel dead  直接重启
 #define PRODUCT_BOOT_PASSWORD 			(0x9070B007)  	// go to boot  进入升级
