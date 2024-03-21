@@ -19,8 +19,6 @@
 
 #if (METERING_MODULE_HUART == 1)
 UART_HandleTypeDef* p_Metering_Module_Huart = &huart1;
-#elif (METERING_MODULE_HUART == 5)
-UART_HandleTypeDef* p_Metering_Module_Huart = &huart5;
 #endif
 
 
@@ -468,8 +466,6 @@ void Metering_Protocol_Analysis(void)
 				MX_USART1_UART_Init();
 #elif METERING_MODULE_HUART == 3
 				MX_USART3_UART_Init();
-#elif METERING_MODULE_HUART == 5
-				MX_UART5_Init();
 #endif
 				__HAL_UART_ENABLE(p_Metering_Module_Huart);
 			}

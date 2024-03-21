@@ -77,6 +77,9 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart1_rx;
 
+extern UART_HandleTypeDef* p_huart_mb;		 //UART句柄
+extern UART_HandleTypeDef* p_huart_debug;		 //UART句柄
+
 /* UART4 init function */
 void MX_UART4_Init(void)
 {
@@ -131,7 +134,8 @@ void MX_UART5_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN UART5_Init 2 */
-
+	HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer5, RXBUFFERSIZE); //该函数会开启接收中断：标志位UART_IT_RXNE，并且设置接收缓冲以及接收缓冲接收最大数据量
+	
   /* USER CODE END UART5_Init 2 */
 
 }
@@ -171,17 +175,17 @@ void MX_USART2_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
-//	uint32_t baud_rate=0;
-//	baud_rate = Dev_BaudRate_Get(2);
+	uint32_t baud_rate=0;
+	baud_rate = Dev_BaudRate_Get(2);
   /* USER CODE END USART2_Init 0 */
 
   /* USER CODE BEGIN USART2_Init 1 */
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;		//app未适配波特率,先强制写入115200 wuqingguang
+  huart2.Init.BaudRate = baud_rate;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_2;
+  huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
   huart2.Init.Mode = UART_MODE_TX_RX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
@@ -617,7 +621,19 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		if (USART5_RX_STA & 0x8000)
 		{
 			flag = 1;
-			memcpy(data, USART5_RX_BUF, USART5_RX_STA & 0x3fff);
+			// DE B8 60 DE 
+			if((USART5_RX_BUF[0] == 0xDE)&&(USART5_RX_BUF[1] == 0xB8)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
+			{
+				Modbus_Debug_Mode = 2;
+				p_huart_mb = p_huart_debug;
+			}
+			else if((USART5_RX_BUF[0] == 0x7E)&&(USART5_RX_BUF[1] == 0xAD)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
+			{
+				Modbus_Debug_Mode = 1;
+				p_huart_mb = &huart2;
+			}
+				
+			memset(USART5_RX_BUF, 0,USART5_RX_STA & 0x3fff);
 			USART5_RX_STA = 0;
 		}
 	}

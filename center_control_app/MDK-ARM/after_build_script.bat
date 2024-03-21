@@ -20,7 +20,7 @@ SET NEW_BIN_FILE=%SCRPIT_PATH%\iGarden_mcu\center_control_app.bin
 SET BIN_TOOL=%ROOT_PATH%\Tools\BinTool\BinTool.exe
 SET CRC16_TOOL=%ROOT_PATH%\Tools\AddCRC16Tool\AddCRC16.exe
 SET BOOTLOADER_FILE=%ROOT_PATH%\Bin\center_control_box.bin
-SET APP_BURN_FILE=%ROOT_PATH%\Bin\center_control_burn.bin
+SET APP_BURN_FILE=%ROOT_PATH%\Bin\center_control_mcu.bin
 SET APP_OTA_FILE=%ROOT_PATH%\Bin\center_control_ota.bin
 SET APP_OFT_ADDR=0x8000
 

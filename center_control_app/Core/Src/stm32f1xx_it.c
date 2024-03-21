@@ -255,24 +255,26 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-#if MODBUS_USART != 2
+	if( Modbus_Debug_Mode == 2)
+	{
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
-#else
-	if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
-		{
-			prvvUARTRxISR();//接收中断
-		}
+	}
+	else
+	{
+		if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
+			{
+				prvvUARTRxISR();//接收中断
+			}
 
-	if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
-		{
-			prvvUARTTxReadyISR();//发送中断
-		}
-	
-  HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
-	HAL_UART_IRQHandler(&huart2);
-#endif
+		if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
+			{
+				prvvUARTTxReadyISR();//发送中断
+			}
+		
+		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
+	}
   /* USER CODE END USART2_IRQn 1 */
 }
 
@@ -282,25 +284,9 @@ void USART2_IRQHandler(void)
 void USART3_IRQHandler(void)
 {
   /* USER CODE BEGIN USART3_IRQn 0 */
-#if MODBUS_USART != 3
-
   /* USER CODE END USART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart3);
   /* USER CODE BEGIN USART3_IRQn 1 */
-#else
-	if(__HAL_UART_GET_IT_SOURCE(&huart3, UART_IT_RXNE)!= RESET) 
-		{
-			prvvUARTRxISR();//接收中断
-		}
-
-	if(__HAL_UART_GET_IT_SOURCE(&huart3, UART_IT_TXE)!= RESET) 
-		{
-			prvvUARTTxReadyISR();//发送中断
-		}
-	
-  HAL_NVIC_ClearPendingIRQ(USART3_IRQn);
-	HAL_UART_IRQHandler(&huart3);
-#endif
   /* USER CODE END USART3_IRQn 1 */
 }
 
@@ -336,30 +322,61 @@ void UART4_IRQHandler(void)
   /* USER CODE END UART4_IRQn 1 */
 }
 
+extern uint8_t aRxBuffer5[1];	 //HAL库USART接收Buffer
 /**
   * @brief This function handles UART5 global interrupt.
   */
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
-#if MODBUS_USART != 5
-  /* USER CODE END UART5_IRQn 0 */
-  HAL_UART_IRQHandler(&huart5);
-  /* USER CODE BEGIN UART5_IRQn 1 */
-#else
-	if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_RXNE)!= RESET) 
+	uint32_t timeout = 0;
+	HAL_UART_IRQHandler(&huart5); //调用HAL库中断处理公用函数
+	
+	if(Modbus_Debug_Mode != 2)
+	{
+		timeout = 0;
+		while (HAL_UART_GetState(&huart5) != HAL_UART_STATE_READY) //等待就绪
 		{
-			prvvUARTRxISR();//接收中断
+			timeout++; ////超时处理
+			if (timeout > 50)
+				break;
 		}
 
-	if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_TXE)!= RESET) 
+		timeout = 0;
+		while (HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer5, 1) != HAL_OK) //一次处理完成之后，重新开启中断并设置RxXferCount为1
 		{
-			prvvUARTTxReadyISR();//发送中断
+			timeout++; //超时处理
+			if (timeout > 50)
+			{
+				//解除忙状态（由ORE导致，清零ORE位）
+				if(HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer5, 1) == HAL_BUSY)
+				{
+					huart1.Lock=HAL_UNLOCKED;
+					//重新开始接收
+					HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer5,1);
+				}
+				else
+				{
+					__HAL_UART_ENABLE_IT(&huart5, UART_IT_ERR);
+				}
+				break;
+			}
 		}
-	
-  HAL_NVIC_ClearPendingIRQ(UART5_IRQn);
-	HAL_UART_IRQHandler(&huart5);
-#endif
+	}
+	else
+	{
+		if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_RXNE)!= RESET) 
+			{
+				prvvUARTRxISR();//接收中断
+			}
+
+		if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_TXE)!= RESET) 
+			{
+				prvvUARTTxReadyISR();//发送中断
+			}
+		
+		HAL_NVIC_ClearPendingIRQ(UART5_IRQn);
+	}
   /* USER CODE END UART5_IRQn 1 */
 }
 

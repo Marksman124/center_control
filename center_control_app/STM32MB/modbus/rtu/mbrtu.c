@@ -41,7 +41,7 @@
 
 #include "mbcrc.h"
 #include "mbport.h"
-
+#include "main.h"
 /* ----------------------- Defines ------------------------------------------*/
 #define MB_SER_PDU_SIZE_MIN     4       /*!< Minimum size of a Modbus RTU frame. */
 #define MB_SER_PDU_SIZE_MAX     256     /*!< Maximum size of a Modbus RTU frame. */
@@ -64,6 +64,11 @@ typedef enum
     STATE_TX_XMIT               /*!< Transmitter is in transfer state. */
 } eMBSndState;
 
+
+/* ----------------------- extern variables ---------------------------------*/
+extern UART_HandleTypeDef* p_huart_debug;		 //调试串口 UART句柄
+
+
 /* ----------------------- Static variables ---------------------------------*/
 static volatile eMBSndState eSndState;
 static volatile eMBRcvState eRcvState;
@@ -75,6 +80,19 @@ static volatile USHORT usSndBufferCount;
 
 static volatile USHORT usRcvBufferPos;
 
+static void UART_Send_Debug(UCHAR * p_buff, USHORT len, UCHAR cmd)
+{
+	UCHAR buffer_temp[256];
+	
+	if(Modbus_Debug_Mode != 1)
+		return;
+	
+	buffer_temp[0] = cmd;
+	memcpy(&buffer_temp[1], p_buff, len);
+	// 转发至串口5  用于调试
+	HAL_UART_Transmit(p_huart_debug, buffer_temp, len+1,0xFFFF); //将收到的信息发送出去
+	//HAL_UART_Transmit_IT(p_huart_debug, (uint8_t *)buffer_temp, len+1);//使用DMA发送数据
+}
 /* ----------------------- Start implementation -----------------------------*/
 eMBErrorCode
 eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity )
@@ -154,7 +172,7 @@ eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength )
 
     ENTER_CRITICAL_SECTION(  );
     assert( usRcvBufferPos < MB_SER_PDU_SIZE_MAX );
-
+	
     /* Length and CRC check */
     if( ( usRcvBufferPos >= MB_SER_PDU_SIZE_MIN )
         && ( usMBCheck_CRC16( ( UCHAR * ) ucRTUBuf, usRcvBufferPos )) )
@@ -179,6 +197,10 @@ eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength )
     }
 
     EXIT_CRITICAL_SECTION(  );
+		
+		// 转发至串口5  用于调试
+		UART_Send_Debug((UCHAR *)ucRTUBuf, usRcvBufferPos, 0); //将收到的信息发送出去
+	
     return eStatus;
 }
 
@@ -218,6 +240,12 @@ eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT usLength )
         eStatus = MB_EIO;
     }
     EXIT_CRITICAL_SECTION(  );
+		
+		if( eRcvState == STATE_RX_IDLE )
+		{
+			// 转发至串口5  用于调试
+			UART_Send_Debug((UCHAR *)ucRTUBuf, usLength+3, 1); //发送
+		}
     return eStatus;
 }
 

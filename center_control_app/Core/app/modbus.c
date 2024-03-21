@@ -99,13 +99,10 @@ HoldingCallOut( USHORT usAddress )
 	else if(usAddress == MB_DATA_ADDR_BAUD_RATE) // 设置波特率
 	{
 		__HAL_UART_DISABLE(p_huart_mb);
-#if MODBUS_USART == 2
+	if( Modbus_Debug_Mode != 2)
 		MX_USART2_UART_Init();
-#elif MODBUS_USART == 3
-		MX_USART3_UART_Init();
-#elif MODBUS_USART == 5
+	else
 		MX_UART5_Init();
-#endif
 		__HAL_UART_ENABLE(p_huart_mb);
 	}
 	
@@ -201,6 +198,24 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 									if(*pucRegBuffer > METERING_ADDR_MAX)
 									{
 										Set_DataAddr_Value( MB_FUNC_READ_HOLDING_REGISTER,  MB_DATA_ADDR_METERING_MODULE_ADDR,  MB_METERING_ADDR_DEFAULT);
+									}
+								}
+								else if(iRegIndex == MB_DATA_ADDR_MODBUS_DEBUG_MODE)
+								{
+									if(usRegHoldingBuf[iRegIndex] == 1)
+									{
+										Modbus_Debug_Mode = 1;
+										p_huart_mb = &huart2;
+									}
+									else if(usRegHoldingBuf[iRegIndex] == 2)
+									{
+										Modbus_Debug_Mode = 2;
+										p_huart_mb = &huart5;
+									}
+									else//退出
+									{
+										Modbus_Debug_Mode = 0;
+										p_huart_mb = &huart2;
 									}
 								}
 							}
@@ -351,11 +366,10 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
 }
 
 
-
+extern UART_HandleTypeDef* p_huart_debug;		 //调试串口 UART句柄
 
 void Modbus_Init(void)
 {
-	
 	eMBInit( MB_RTU, 0xAA, 0, 115200, MB_PAR_ODD);//初始化modbus，走modbusRTU，从站地址为0xAA，串口为2。
 	eMBEnable(  );//使能modbus
 	
