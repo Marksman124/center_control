@@ -632,6 +632,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				Modbus_Debug_Mode = 1;
 				p_huart_mb = &huart2;
 			}
+			else
+			{
+				Modbus_Debug_Mode = 0;
+				p_huart_mb = &huart2;
+			}	
 				
 			memset(USART5_RX_BUF, 0,USART5_RX_STA & 0x3fff);
 			USART5_RX_STA = 0;
