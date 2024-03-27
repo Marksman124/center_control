@@ -624,18 +624,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			// DE B8 60 DE 
 			if((USART5_RX_BUF[0] == 0xDE)&&(USART5_RX_BUF[1] == 0xB8)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
 			{
-				Modbus_Debug_Mode = 2;
-				p_huart_mb = p_huart_debug;
+				Set_Modbus_Debug_Mode(2);
 			}
 			else if((USART5_RX_BUF[0] == 0x7E)&&(USART5_RX_BUF[1] == 0xAD)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
 			{
-				Modbus_Debug_Mode = 1;
-				p_huart_mb = &huart2;
+				Set_Modbus_Debug_Mode(1);
 			}
 			else
 			{
-				Modbus_Debug_Mode = 0;
-				p_huart_mb = &huart2;
+				Set_Modbus_Debug_Mode(0);
 			}	
 				
 			memset(USART5_RX_BUF, 0,USART5_RX_STA & 0x3fff);
@@ -644,4 +641,31 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
+void Set_Modbus_Debug_Mode(uint8_t mode)
+{
+	if(mode == Modbus_Debug_Mode)
+		return;
+	
+	if(mode == 1)
+	{
+		Modbus_Debug_Mode = 1;
+		p_huart_mb = &huart2;
+	}
+	else if(mode == 2)
+	{
+#ifdef SYSTEM_SOFTWARE_DEBUG
+		Modbus_Debug_Mode = 2;
+		p_huart_mb = p_huart_debug;
+#endif
+	}
+	else
+	{
+		Modbus_Debug_Mode = 0;
+		p_huart_mb = &huart2;
+	}
+}
+
+			
+			
+			
 /* USER CODE END 1 */

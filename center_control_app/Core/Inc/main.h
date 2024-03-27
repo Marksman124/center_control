@@ -47,6 +47,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 //#define SYSTEM_HARDWARE_DEBUG					1			// 硬件调试模式
+//#define SYSTEM_SOFTWARE_DEBUG					1			// 软件调试模式
 
 /* USER CODE BEGIN EM */
 // 串口1 --> 计量模块(485)

@@ -255,6 +255,7 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
+#ifdef SYSTEM_SOFTWARE_DEBUG
 	if( Modbus_Debug_Mode == 2)
 	{
   /* USER CODE END USART2_IRQn 0 */
@@ -262,6 +263,7 @@ void USART2_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 1 */
 	}
 	else
+#endif
 	{
 		if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
 			{
@@ -365,6 +367,7 @@ void UART5_IRQHandler(void)
 	}
 	else
 	{
+#ifdef SYSTEM_SOFTWARE_DEBUG
 		if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_RXNE)!= RESET) 
 			{
 				prvvUARTRxISR();//Ω” ’÷–∂œ
@@ -376,6 +379,7 @@ void UART5_IRQHandler(void)
 			}
 		
 		HAL_NVIC_ClearPendingIRQ(UART5_IRQn);
+#endif
 	}
   /* USER CODE END UART5_IRQn 1 */
 }

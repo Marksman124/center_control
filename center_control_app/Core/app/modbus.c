@@ -99,13 +99,16 @@ HoldingCallOut( USHORT usAddress )
 	else if(usAddress == MB_DATA_ADDR_BAUD_RATE) // 设置波特率
 	{
 		__HAL_UART_DISABLE(p_huart_mb);
+#ifdef SYSTEM_SOFTWARE_DEBUG
 	if( Modbus_Debug_Mode != 2)
 		MX_USART2_UART_Init();
 	else
 		MX_UART5_Init();
 		__HAL_UART_ENABLE(p_huart_mb);
+#else
+		MX_USART2_UART_Init();
+#endif
 	}
-	
 	//扇区是2048， 整个 usRegHoldingBuf 一起写
 	STMFLASH_Write(FLASH_APP_PARAM_ADDR, usRegHoldingBuf, REG_HOLDING_NREGS );
 }
@@ -202,21 +205,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 								}
 								else if(iRegIndex == MB_DATA_ADDR_MODBUS_DEBUG_MODE)
 								{
-									if(usRegHoldingBuf[iRegIndex] == 1)
-									{
-										Modbus_Debug_Mode = 1;
-										p_huart_mb = &huart2;
-									}
-									else if(usRegHoldingBuf[iRegIndex] == 2)
-									{
-										Modbus_Debug_Mode = 2;
-										p_huart_mb = &huart5;
-									}
-									else//退出
-									{
-										Modbus_Debug_Mode = 0;
-										p_huart_mb = &huart2;
-									}
+									Set_Modbus_Debug_Mode(usRegHoldingBuf[iRegIndex]);
 								}
 							}
 							iRegIndex++;
