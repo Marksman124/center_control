@@ -23,7 +23,14 @@ extern "C" {
 
 /* Private define ------------------------------------------------------------*/
 
-#if (DMX512_HUART == 3)
+#if (DMX512_HUART == 1)
+#define DMX512_RS485_EN_PORT		RS48501_RE_GPIO_Port
+#define DMX512_RS485_EN_PIN			RS48501_RE_Pin
+
+#define DMX512_RS485_TX_PORT		GPIOA
+#define DMX512_RS485_TX_PIN			GPIO_PIN_9
+
+#elif (DMX512_HUART == 3)
 #define DMX512_RS485_TX_PORT		GPIOB
 #define DMX512_RS485_TX_PIN			GPIO_PIN_10
 

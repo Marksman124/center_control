@@ -19,6 +19,8 @@
 
 #if (METERING_MODULE_HUART == 1)
 UART_HandleTypeDef* p_Metering_Module_Huart = &huart1;
+#elif (METERING_MODULE_HUART == 4)
+UART_HandleTypeDef* p_Metering_Module_Huart = &huart4;
 #endif
 
 
@@ -385,7 +387,7 @@ void USART_Config(uint32_t baud)
 {
 	/* Disable the peripheral */
   __HAL_UART_DISABLE(p_Metering_Module_Huart);
-	
+#if (METERING_MODULE_HUART == 1)
 	huart1.Instance = USART1;
   huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
@@ -398,6 +400,20 @@ void USART_Config(uint32_t baud)
   {
     Error_Handler();
   }
+#elif (METERING_MODULE_HUART == 4)
+	huart4.Instance = UART4;
+  huart4.Init.BaudRate = 9600;
+  huart4.Init.WordLength = UART_WORDLENGTH_8B;
+  huart4.Init.StopBits = UART_STOPBITS_1;
+  huart4.Init.Parity = UART_PARITY_NONE;
+  huart4.Init.Mode = UART_MODE_TX_RX;
+  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+#endif
 	
 	/* Enable the peripheral */
   __HAL_UART_ENABLE(p_Metering_Module_Huart);

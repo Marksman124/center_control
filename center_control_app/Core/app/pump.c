@@ -158,7 +158,7 @@ void Call_PUMP_Handle_Task(void)
 void PUMP_Hardware_Debug(void)
 {
 #ifdef SYSTEM_HARDWARE_DEBUG
-	if( Pump_Hardware_Debug_Cnt == 200)
+	if( Pump_Hardware_Debug_Cnt == 500)
 	{
 		StartUp_PWM1(AGREEMENT_CURRENT_PUMP_MAX/2);
 		StartUp_PWM2(AGREEMENT_CURRENT_PUMP_MAX/2);
@@ -169,7 +169,7 @@ void PUMP_Hardware_Debug(void)
 		StartUp_KA1(0xFF);
 		StartUp_KA2(0xFF);
 	}
-	else if( Pump_Hardware_Debug_Cnt == 400)
+	else if( Pump_Hardware_Debug_Cnt == 1000)
 	{
 		StartUp_PWM1(AGREEMENT_CURRENT_PUMP_MAX);
 		StartUp_PWM2(AGREEMENT_CURRENT_PUMP_MAX);
@@ -182,8 +182,10 @@ void PUMP_Hardware_Debug(void)
 	}
 	else if( Pump_Hardware_Debug_Cnt == 0)
 	{
-		StartUp_PWM1(0);
-		StartUp_PWM2(0);
+//		StartUp_PWM1(0);
+//		StartUp_PWM2(0);
+		Stop_PWM1();
+		Stop_PWM2();
 		
 		StartUp_DAC1(0);
 		StartUp_DAC2(0);
@@ -192,7 +194,7 @@ void PUMP_Hardware_Debug(void)
 		StartUp_KA2(0);
 	}
 	
-	if(++Pump_Hardware_Debug_Cnt > 599)
+	if(Pump_Hardware_Debug_Cnt++ > 1501)
 		Pump_Hardware_Debug_Cnt = 0;
 		
 #endif

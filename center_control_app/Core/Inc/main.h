@@ -37,7 +37,8 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define SYSTEM_HARDWARE_DEBUG
+//#define SYSTEM_SOFTWARE_DEBUG
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -46,9 +47,6 @@ extern "C" {
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
-//#define SYSTEM_HARDWARE_DEBUG					1			// 硬件调试模式
-//#define SYSTEM_SOFTWARE_DEBUG					1			// 软件调试模式
-
 /* USER CODE BEGIN EM */
 // 串口1 --> 计量模块(485)
 // 串口2 --> 核心板(485)
@@ -57,8 +55,8 @@ extern "C" {
 // 串口5 --> 预留(232 TTL)
 //#define MODBUS_USART								2		//2  //(A3)  3调试可用
 extern uint8_t Modbus_Debug_Mode;
-#define	METERING_MODULE_HUART				1		//(A1)
-#define	DMX512_HUART								4 	//(A2)
+#define	METERING_MODULE_HUART				4		//(A1)
+#define	DMX512_HUART								1 	//(A2)
 
 #define	SYSTEM_USER_USART_MAX				5		
 

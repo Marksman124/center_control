@@ -39,7 +39,9 @@ uint16_t* p_Dmx512_DataLen;
 
 uint8_t Dmx512_Send_Buff[DMX512_RS485_TX_BUFF_SIZE+1] = {0};
 
-#if (DMX512_HUART == 3)
+#if (DMX512_HUART == 1)
+UART_HandleTypeDef* p_Dmx512_Huart = &huart1;
+#elif (DMX512_HUART == 3)
 UART_HandleTypeDef* p_Dmx512_Huart = &huart3;
 #elif (DMX512_HUART == 4)
 UART_HandleTypeDef* p_Dmx512_Huart = &huart4;
@@ -65,14 +67,14 @@ static void Dmx512_Delay(uint32_t mdelay)
 
 void Dmx512_Rs485_RecMode(void)
 {
-#if (DMX512_HUART == 4)
+#if ((DMX512_HUART == 1)||(DMX512_HUART == 4))
 	HAL_GPIO_WritePin(DMX512_RS485_EN_PORT, DMX512_RS485_EN_PIN, GPIO_PIN_RESET);
 #endif
 }
 
 void Dmx512_Rs485_SendMode(void)
 {
-#if (DMX512_HUART == 4)
+#if ((DMX512_HUART == 1)||(DMX512_HUART == 4))
 	HAL_GPIO_WritePin(DMX512_RS485_EN_PORT, DMX512_RS485_EN_PIN, GPIO_PIN_SET);
 #endif
 }

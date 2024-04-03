@@ -62,6 +62,7 @@ extern void prvvTIMERExpiredISR( void );
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
+extern DMA_HandleTypeDef hdma_uart4_rx;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart5;
@@ -234,8 +235,8 @@ void TIM4_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
+#if (METERING_MODULE_HUART == 1)
 	uint8_t temp=0;
-	
 	if((__HAL_UART_GET_FLAG(&huart1,UART_FLAG_IDLE) != RESET))//如果是接收完成中断，idle标志被置位
 	{
 		__HAL_UART_CLEAR_IDLEFLAG(&huart1);//清除标志位
@@ -243,6 +244,7 @@ void USART1_IRQHandler(void)
 		temp  =  __HAL_DMA_GET_COUNTER(huart1.hdmarx);// 获取DMA中未传输的数据个数   
 		Subsystem_RxData(temp);
 	 }
+#endif
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
@@ -316,7 +318,16 @@ void TIM5_IRQHandler(void)
 void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
-
+#if (METERING_MODULE_HUART == 4)
+	uint8_t temp=0;
+	if((__HAL_UART_GET_FLAG(&huart4,UART_FLAG_IDLE) != RESET))//如果是接收完成中断，idle标志被置位
+	{
+		__HAL_UART_CLEAR_IDLEFLAG(&huart4);//清除标志位
+		HAL_UART_DMAStop(&huart4); //  停止DMA传输，防止
+		temp  =  __HAL_DMA_GET_COUNTER(huart4.hdmarx);// 获取DMA中未传输的数据个数   
+		Subsystem_RxData(temp);
+	 }
+#endif
   /* USER CODE END UART4_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN UART4_IRQn 1 */
@@ -324,64 +335,32 @@ void UART4_IRQHandler(void)
   /* USER CODE END UART4_IRQn 1 */
 }
 
-extern uint8_t aRxBuffer5[1];	 //HAL库USART接收Buffer
 /**
   * @brief This function handles UART5 global interrupt.
   */
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
-	uint32_t timeout = 0;
-	HAL_UART_IRQHandler(&huart5); //调用HAL库中断处理公用函数
-	
-	if(Modbus_Debug_Mode != 2)
-	{
-		timeout = 0;
-		while (HAL_UART_GetState(&huart5) != HAL_UART_STATE_READY) //等待就绪
-		{
-			timeout++; ////超时处理
-			if (timeout > 50)
-				break;
-		}
 
-		timeout = 0;
-		while (HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer5, 1) != HAL_OK) //一次处理完成之后，重新开启中断并设置RxXferCount为1
-		{
-			timeout++; //超时处理
-			if (timeout > 50)
-			{
-				//解除忙状态（由ORE导致，清零ORE位）
-				if(HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer5, 1) == HAL_BUSY)
-				{
-					huart1.Lock=HAL_UNLOCKED;
-					//重新开始接收
-					HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer5,1);
-				}
-				else
-				{
-					__HAL_UART_ENABLE_IT(&huart5, UART_IT_ERR);
-				}
-				break;
-			}
-		}
-	}
-	else
-	{
-#ifdef SYSTEM_SOFTWARE_DEBUG
-		if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_RXNE)!= RESET) 
-			{
-				prvvUARTRxISR();//接收中断
-			}
+  /* USER CODE END UART5_IRQn 0 */
+  HAL_UART_IRQHandler(&huart5);
+  /* USER CODE BEGIN UART5_IRQn 1 */
 
-		if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_TXE)!= RESET) 
-			{
-				prvvUARTTxReadyISR();//发送中断
-			}
-		
-		HAL_NVIC_ClearPendingIRQ(UART5_IRQn);
-#endif
-	}
   /* USER CODE END UART5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 channel3 global interrupt.
+  */
+void DMA2_Channel3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart4_rx);
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

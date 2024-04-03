@@ -362,7 +362,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 void StartUp_PWM1(uint16_t pul)
 {
 	uint16_t dat;
-	dat = pul * 5;
+	dat = pul;
 	
 	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_1);
 	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, dat);
@@ -378,7 +378,7 @@ void Stop_PWM1(void)
 void StartUp_PWM2(uint16_t  pul)
 {
 	uint16_t dat;
-	dat = pul * 5;
+	dat = pul;
 	
 	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_2);
 	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, dat);
