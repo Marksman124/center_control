@@ -38,7 +38,7 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
-//#define SYSTEM_HARDWARE_DEBUG
+#define SYSTEM_HARDWARE_DEBUG
 //#define SYSTEM_SOFTWARE_DEBUG
 
 /* USER CODE END ET */
