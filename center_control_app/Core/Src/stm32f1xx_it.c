@@ -257,28 +257,23 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-#ifdef SYSTEM_SOFTWARE_DEBUG
-	if( Modbus_Debug_Mode == 2)
-	{
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
+	
   /* USER CODE BEGIN USART2_IRQn 1 */
-	}
-	else
-#endif
-	{
-		if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
-			{
-				prvvUARTRxISR();//接收中断
-			}
+	
+	if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
+		{
+			prvvUARTRxISR();//接收中断
+		}
 
-		if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
-			{
-				prvvUARTTxReadyISR();//发送中断
-			}
+	if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
+		{
+			prvvUARTTxReadyISR();//发送中断
+		}
+	
+	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
 		
-		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
-	}
   /* USER CODE END USART2_IRQn 1 */
 }
 

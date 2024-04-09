@@ -37,7 +37,7 @@ uint32_t Dev_BaudRate_Get(uint8_t usart_num)
 {
 	uint32_t all_usart_baudrate_table[SYSTEM_USER_USART_MAX] = {9600,115200,115200,250000,115200};//U1 ~ U5 默认波特率
 	
-	if( ((usart_num == 5)&&(Modbus_Debug_Mode == 1)) ||	((usart_num == 2)&&(Modbus_Debug_Mode != 1)) )// modbus
+	if(usart_num == MODBUS_USART)// modbus
 	{
 		// 先写死 115200 wuqingguang
 		//if( (*p_Baud_Rate >= MODBUS_BAUDRATE_TABLE_LEN) || (*p_Baud_Rate == 0) )
