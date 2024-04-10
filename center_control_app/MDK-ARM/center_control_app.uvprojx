@@ -803,6 +803,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\app\subsystem.c</FilePath>
             </File>
+            <File>
+              <FileName>debug_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\app\debug_protocol.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

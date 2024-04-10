@@ -24,7 +24,7 @@
 
 #include <assert.h>
 #include <inttypes.h>
-//#include "stm32f1xx_hal.h"
+#include "stm32f1xx_hal.h"
 
 #define	INLINE                      inline
 #define PR_BEGIN_EXTERN_C           extern "C" {

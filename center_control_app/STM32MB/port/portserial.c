@@ -30,9 +30,13 @@
 void prvvUARTTxReadyISR( void );
 void prvvUARTRxISR( void );
 
+#if MODBUS_USART == 2
 UART_HandleTypeDef* p_huart_mb = &huart2;		 //UART句柄
-
-UART_HandleTypeDef* p_huart_debug = &huart5;		 //调试串口 UART句柄
+#elif MODBUS_USART == 3
+UART_HandleTypeDef* p_huart_mb = &huart3;		 //UART句柄
+#elif MODBUS_USART == 5
+UART_HandleTypeDef* p_huart_mb = &huart5;		 //UART句柄
+#endif
 /* ----------------------- Start implementation -----------------------------*/
 void
 vMBPortSerialEnable( BOOL xRxEnable, BOOL xTxEnable )
@@ -42,7 +46,7 @@ vMBPortSerialEnable( BOOL xRxEnable, BOOL xTxEnable )
      */
 	if (xRxEnable)															//将串口收发中断和modbus联系起来，下面的串口改为自己使能的串口
 		{
-			__HAL_UART_ENABLE_IT(p_huart_mb,UART_IT_RXNE);	//我用的是串口2
+			__HAL_UART_ENABLE_IT(p_huart_mb,UART_IT_RXNE);	//我用的是串口2，故为p_huart_mb
 		}
 	else
 		{

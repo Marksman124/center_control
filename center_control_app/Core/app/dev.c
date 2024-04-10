@@ -37,7 +37,7 @@ uint32_t Dev_BaudRate_Get(uint8_t usart_num)
 {
 	uint32_t all_usart_baudrate_table[SYSTEM_USER_USART_MAX] = {9600,115200,115200,250000,115200};//U1 ~ U5 默认波特率
 	
-	if(usart_num == MODBUS_USART)// modbus
+	if(usart_num == MODBUS_USART)	// modbus
 	{
 		// 先写死 115200 wuqingguang
 		//if( (*p_Baud_Rate >= MODBUS_BAUDRATE_TABLE_LEN) || (*p_Baud_Rate == 0) )
@@ -58,6 +58,12 @@ uint32_t Dev_BaudRate_Get(uint8_t usart_num)
 	{
 		return 250000;
 	}
+#ifdef DEBUG_HUART
+	else if(usart_num == DEBUG_HUART)	// 调试串口
+	{
+		return 115200;
+	}
+#endif
 	else if( (usart_num <= SYSTEM_USER_USART_MAX) && (usart_num > 0) )
 	{
 		return all_usart_baudrate_table[usart_num -1];
@@ -72,7 +78,7 @@ void Dev_Information_Init(void)
 	p_Local_Address = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_SLAVE_ADDRESS);
 	
 	p_Baud_Rate = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_BAUD_RATE);
-	Dev_BaudRate_Get(2);
+	Dev_BaudRate_Get(MODBUS_USART);
 	
 	p_Software_Version_high = Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_HIGH);//	软件版本
 	p_Software_Version_low = Get_DataAddr_Pointer(MB_FUNC_READ_INPUT_REGISTER,MB_DATA_ADDR_SOFTWARE_VERSION_LOW);

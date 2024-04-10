@@ -2643,14 +2643,18 @@ __weak void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart)
   *                the configuration information for the specified UART module.
   * @retval None
   */
-__weak void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+/* 中断错误处理函数，在此处理overrun错误 */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(huart);
-  /* NOTE: This function should not be modified, when the callback is needed,
-           the HAL_UART_ErrorCallback could be implemented in the user file
-   */
+    uint8_t i = 0;
+
+    if(__HAL_UART_GET_FLAG(huart,UART_FLAG_ORE) != RESET) 
+    {
+        __HAL_UART_CLEAR_OREFLAG(huart);
+        HAL_UART_Receive_IT(huart,(uint8_t *)&i,1);
+    }
 }
+
 
 /**
   * @brief  UART Abort Complete callback.

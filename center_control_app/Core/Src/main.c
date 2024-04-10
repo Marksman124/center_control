@@ -59,8 +59,6 @@ void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
-uint8_t Modbus_Debug_Mode = 0;
-
 extern void Modbus_Buffer_Init(void);
 extern void Dev_Information_Init(void);
 

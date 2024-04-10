@@ -33,9 +33,6 @@
 #ifdef __cplusplus
 PR_BEGIN_EXTERN_C
 #endif
-
-#include "port.h"
-
 /* ----------------------- Defines ------------------------------------------*/
 #define MB_ADDRESS_BROADCAST    ( 0 )   /*! Modbus broadcast address. */
 #define MB_ADDRESS_MIN          ( 1 )   /*! Smallest possible slave address. */

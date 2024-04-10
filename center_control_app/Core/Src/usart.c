@@ -24,10 +24,7 @@
 #include <string.h>
 #include "subsystem.h"
 #include "dev.h"
-
-#include "mbproto.h"
-#include "modbus.h"
-
+#include "debug_protocol.h"	///////////////////////	串口调试
 
 //串口1中断服务程序
 //注意,读取USARTx->SR能避免莫名其妙的错误
@@ -236,7 +233,7 @@ void MX_USART3_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART3_Init 2 */
-
+	HAL_UART_Receive_IT(&huart3, (uint8_t *)aRxBuffer3, RXBUFFERSIZE); //该函数会开启接收中断：标志位UART_IT_RXNE，并且设置接收缓冲以及接收缓冲接收最大数据量
   /* USER CODE END USART3_Init 2 */
 
 }
@@ -547,24 +544,77 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 
-extern UART_HandleTypeDef* p_huart_debug;		 //调试串口 UART句柄
-
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	uint16_t addr;
-	uint16_t value;
-	
 	if (huart->Instance == USART1) //如果是串口1
 	{
 		
 	}
 	if (huart->Instance == USART2) //如果是串口2
 	{
+		if ((USART2_RX_STA & 0x8000) == 0) //接收未完成
+		{
+			if (USART2_RX_STA & 0x4000) //接收到了0x0d
+			{
+				if (aRxBuffer2[0] != 0x0a)
+					USART2_RX_STA = 0; //接收错误,重新开始
+				else
+					USART2_RX_STA |= 0x8000; //接收完成了
+			}
+			else //还没收到0X0D
+			{
+				if (aRxBuffer2[0] == 0x0d)
+					USART2_RX_STA |= 0x4000;
+				else
+				{
+					USART2_RX_BUF[USART2_RX_STA & 0X3FFF] = aRxBuffer2[0];
+					USART2_RX_STA++;
+					if (USART2_RX_STA > (USART_REC_LEN - 1))
+						USART2_RX_STA = 0; //接收数据错误,重新开始接收
+				}
+			}
+		}
+
+		if (USART2_RX_STA & 0x8000)
+		{
+			flag = 1;
+			memcpy(data, USART2_RX_BUF, USART2_RX_STA & 0x3fff);
+			USART2_RX_STA = 0;
+		}
 	}
 
 	if (huart->Instance == USART3) //如果是串口3
 	{
-		
+		if ((USART3_RX_STA & 0x8000) == 0) //接收未完成
+		{
+			if (USART3_RX_STA & 0x4000) //接收到了0x0d
+			{
+				if (aRxBuffer3[0] != 0x0a)
+					USART3_RX_STA = 0; //接收错误,重新开始
+				else
+					USART3_RX_STA |= 0x8000; //接收完成了
+			}
+			else //还没收到0X0D
+			{
+				if (aRxBuffer3[0] == 0x0d)
+					USART3_RX_STA |= 0x4000;
+				else
+				{
+					USART3_RX_BUF[USART3_RX_STA & 0X3FFF] = aRxBuffer3[0];
+					USART3_RX_STA++;
+					if (USART3_RX_STA > (USART_REC_LEN - 1))
+						USART3_RX_STA = 0; //接收数据错误,重新开始接收
+				}
+			}
+		}
+
+		if (USART3_RX_STA & 0x8000)
+		{
+			flag = 1;
+			memcpy(data, USART3_RX_BUF, USART3_RX_STA & 0x3fff);
+			USART3_RX_STA = 0;
+			To_Debug_Protocol_Analysis(data, USART3_RX_STA & 0x3fff);
+		}
 	}
 
 	if (huart->Instance == UART4) //如果是串口4
@@ -628,85 +678,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		if (USART5_RX_STA & 0x8000)
 		{
 			flag = 1;
-			// DE B8 60 DE 
-			if((USART5_RX_BUF[0] == 0xDE)&&(USART5_RX_BUF[1] == 0xB8)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
-			{
-				Set_Modbus_Debug_Mode(2);
-			}
-			// 7E AD 60 DE
-			else if((USART5_RX_BUF[0] == 0x7E)&&(USART5_RX_BUF[1] == 0xAD)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
-			{
-				Set_Modbus_Debug_Mode(1);
-			}
-			// 60 6A 60 DE
-			else if((USART5_RX_BUF[0] == 0x60)&&(USART5_RX_BUF[1] == 0x6A)&&(USART5_RX_BUF[2] == 0x60)&&(USART5_RX_BUF[3] == 0xDE))
-			{
-				Set_Modbus_Debug_Mode(0);
-			}
-			else
-			{
-				if(Modbus_Debug_Mode == 2)
-				{
-					// 91 7E write
-					if((USART5_RX_BUF[0] == 0x91)&&(USART5_RX_BUF[1] == 0x7E))
-					{
-						if(( USART5_RX_BUF[2] == MB_FUNC_READ_HOLDING_REGISTER ) || ( USART5_RX_BUF[2] == MB_FUNC_READ_INPUT_REGISTER ))
-						{
-							addr = USART5_RX_BUF[3]<<8 | USART5_RX_BUF[4];
-							value = USART5_RX_BUF[5]<<8 | USART5_RX_BUF[6];
-							Set_DataAddr_Value( USART5_RX_BUF[2],  addr, value);
-							
-							memset(USART2_RX_BUF,0,sizeof(USART2_RX_BUF));
-							// 转发至串口5  用于调试
-							HAL_UART_Transmit(p_huart_debug, USART2_RX_BUF, 5,0xFFFF); //将收到的信息发送出去
-						}
-					}	
-					// 7E AD read
-					else if((USART5_RX_BUF[0] == 0x7E)&&(USART5_RX_BUF[1] == 0xAD))
-					{
-						if(( USART5_RX_BUF[2] == MB_FUNC_READ_HOLDING_REGISTER ) || ( USART5_RX_BUF[2] == MB_FUNC_READ_INPUT_REGISTER ))
-						{
-							addr = USART5_RX_BUF[3]<<8 | USART5_RX_BUF[4];
-							value = Get_DataAddr_Value( USART5_RX_BUF[2],  addr);
-							
-							memset(USART2_RX_BUF,0,sizeof(USART2_RX_BUF));
-							USART2_RX_BUF[0] = USART5_RX_BUF[2];
-							USART2_RX_BUF[1] = USART5_RX_BUF[3];
-							USART2_RX_BUF[2] = USART5_RX_BUF[4];
-							USART2_RX_BUF[3] = value>>8;
-							USART2_RX_BUF[4] = value;
-							// 转发至串口5  用于调试
-							HAL_UART_Transmit(p_huart_debug, USART2_RX_BUF, 5,0xFFFF); //将收到的信息发送出去
-						}
-					}
-				}
-			}
-			memset(USART5_RX_BUF, 0,USART5_RX_STA & 0x3fff);
+			memcpy(data, USART5_RX_BUF, USART5_RX_STA & 0x3fff);
 			USART5_RX_STA = 0;
+			To_Debug_Protocol_Analysis(data, USART5_RX_STA & 0x3fff);
 		}
 	}
 }
 
-void Set_Modbus_Debug_Mode(uint8_t mode)
-{
-	if(mode == Modbus_Debug_Mode)
-		return;
-	
-	if(mode == 1)
-	{
-		Modbus_Debug_Mode = 1;
-	}
-	else if(mode == 2)
-	{
-		Modbus_Debug_Mode = 2;
-	}
-	else
-	{
-		Modbus_Debug_Mode = 0;
-	}
-}
-
-			
-			
-			
 /* USER CODE END 1 */

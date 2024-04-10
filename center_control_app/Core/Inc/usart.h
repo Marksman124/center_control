@@ -91,7 +91,6 @@ void MX_UART5_Init(void);
 void MX_USART1_UART_Init(void);
 void MX_USART2_UART_Init(void);
 void MX_USART3_UART_Init(void);
-void Set_Modbus_Debug_Mode(uint8_t mode);
 
 /* USER CODE BEGIN Prototypes */
 

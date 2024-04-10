@@ -33,7 +33,6 @@ extern "C" {
 
 #define MB_DATA_ADDR_SLAVE_ADDRESS					( 0x0 )
 #define MB_DATA_ADDR_BAUD_RATE             	( 0x1 )
-#define MB_DATA_ADDR_MODBUS_DEBUG_MODE             	( 0x2 )	// 预留设置 debug模式 Modbus_Debug_Mode
 #define MB_DATA_ADDR_GEAR_PUMP_1          	( 0x10 )
 #define MB_DATA_ADDR_GEAR_PUMP_2  					( 0x11 )
 #define MB_DATA_ADDR_CURRENT_PUMP_1     		( 0x12 )
