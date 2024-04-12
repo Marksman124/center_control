@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "subsystem.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,8 +44,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-extern uint8_t aRxBuffer3;	 //HAL库USART接收Buffer
-extern uint8_t aRxBuffer5;	 //HAL库USART接收Buffer
+//extern uint8_t aRxBuffer3[RXBUFFERSIZE];	 //HAL库USART接收Buffer
+//extern uint8_t aRxBuffer5[RXBUFFERSIZE];	 //HAL库USART接收Buffer
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -285,14 +286,15 @@ void USART2_IRQHandler(void)
 void USART3_IRQHandler(void)
 {
   /* USER CODE BEGIN USART3_IRQn 0 */
+	
+#if DEBUG_HUART == 3
+	
 	uint32_t timeout = 0;
 	
 	HAL_UART_IRQHandler(&huart3);
-#if MODBUS_USART != 3
-
   /* USER CODE END USART3_IRQn 0 */
 	timeout = 0;
-		while (HAL_UART_GetState(&huart5) != HAL_UART_STATE_READY) //等待就绪
+		while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY) //等待就绪
 		{
 			timeout++; ////超时处理
 			if (timeout > 50)
@@ -300,27 +302,27 @@ void USART3_IRQHandler(void)
 		}
 
 		timeout = 0;
-		while (HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer3, 1) != HAL_OK) //一次处理完成之后，重新开启中断并设置RxXferCount为1
+		while (HAL_UART_Receive_IT(&huart3, (uint8_t *)aRxBuffer3, 1) != HAL_OK) //一次处理完成之后，重新开启中断并设置RxXferCount为1
 		{
 			timeout++; //超时处理
 			if (timeout > 50)
 			{
 				//解除忙状态（由ORE导致，清零ORE位）
-				if(HAL_UART_Receive_IT(&huart5, (uint8_t *)aRxBuffer3, 1) == HAL_BUSY)
+				if(HAL_UART_Receive_IT(&huart3, (uint8_t *)aRxBuffer3, 1) == HAL_BUSY)
 				{
 					huart1.Lock=HAL_UNLOCKED;
 					//重新开始接收
-					HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer3,1);
+					HAL_UART_Receive_IT(&huart3, (uint8_t *)&aRxBuffer3,1);
 				}
 				else
 				{
-					__HAL_UART_ENABLE_IT(&huart5, UART_IT_ERR);
+					__HAL_UART_ENABLE_IT(&huart3, UART_IT_ERR);
 				}
 				break;
 			}
 		}
   /* USER CODE BEGIN USART3_IRQn 1 */
-#else
+#elif MODBUS_USART == 3
 	if(__HAL_UART_GET_IT_SOURCE(&huart3, UART_IT_RXNE)!= RESET) 
 		{
 			prvvUARTRxISR();//接收中断
@@ -384,10 +386,12 @@ void UART4_IRQHandler(void)
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
+
+#if DEBUG_HUART == 5
+	
 	uint32_t timeout = 0;
 	
 	HAL_UART_IRQHandler(&huart5);
-#if MODBUS_USART != 5
   /* USER CODE END UART5_IRQn 0 */
 	
 	timeout = 0;
@@ -419,7 +423,7 @@ void UART5_IRQHandler(void)
 			}
 		}
   /* USER CODE BEGIN UART5_IRQn 1 */
-#else
+#elif MODBUS_USART == 5
 	if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_RXNE)!= RESET) 
 		{
 			prvvUARTRxISR();//接收中断

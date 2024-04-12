@@ -611,9 +611,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		if (USART3_RX_STA & 0x8000)
 		{
 			flag = 1;
-			memcpy(data, USART3_RX_BUF, USART3_RX_STA & 0x3fff);
+			To_Debug_Protocol_Analysis(USART3_RX_BUF, USART3_RX_STA & 0x3fff);
+			memset(USART3_RX_BUF, 0, USART3_RX_STA & 0x3fff);
 			USART3_RX_STA = 0;
-			To_Debug_Protocol_Analysis(data, USART3_RX_STA & 0x3fff);
 		}
 	}
 
@@ -678,9 +678,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		if (USART5_RX_STA & 0x8000)
 		{
 			flag = 1;
-			memcpy(data, USART5_RX_BUF, USART5_RX_STA & 0x3fff);
+			To_Debug_Protocol_Analysis(USART5_RX_BUF, USART5_RX_STA & 0x3fff);
+			memset(USART5_RX_BUF, 0, USART5_RX_STA & 0x3fff);
 			USART5_RX_STA = 0;
-			To_Debug_Protocol_Analysis(data, USART5_RX_STA & 0x3fff);
 		}
 	}
 }

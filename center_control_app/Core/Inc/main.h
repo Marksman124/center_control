@@ -56,7 +56,7 @@ extern "C" {
 #define MODBUS_USART								2		//2  //(A3)  3备用
 #define	METERING_MODULE_HUART				4		//(A1) 	原来 1 
 #define	DMX512_HUART								1 	//(A2)	原来 4
-//#define	DEBUG_HUART									3 	//
+#define	DEBUG_HUART									3 	//
 
 #define	SYSTEM_USER_USART_MAX				5
 
@@ -66,7 +66,7 @@ extern "C" {
 #define	THREAD_PERIOD_DMX512_HUART								50
 
 // 软件版本
-#define	SOFTWARE_VERSION_UINT32								0x00020002		//2.0.2
+#define	SOFTWARE_VERSION_UINT32								0x00020100		//2.1.0
 
 /* USER CODE END EM */
 

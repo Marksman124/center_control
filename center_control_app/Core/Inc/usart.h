@@ -30,7 +30,7 @@ extern "C" {
 
 /* USER CODE BEGIN Includes */
 #define USART_REC_LEN  			100  	//定义最大接收字节数 200
-#define RXBUFFERSIZE   1 //缓存大小
+#define RXBUFFERSIZE   20 //缓存大小
 
 //串口1
 #define EN_USART1_RX 			1		//使能（1）/禁止（0）串口1接收  	
