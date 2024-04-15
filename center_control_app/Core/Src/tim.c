@@ -365,7 +365,7 @@ void StartUp_PWM1(uint16_t pul)
 	dat = pul;
 	
 	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_1);
-	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, dat);
+	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, dat*5);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 }
 
@@ -381,7 +381,7 @@ void StartUp_PWM2(uint16_t  pul)
 	dat = pul;
 	
 	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_2);
-	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, dat);
+	__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, dat*5);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 }
 

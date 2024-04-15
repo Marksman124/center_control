@@ -66,7 +66,7 @@ extern "C" {
 #define	THREAD_PERIOD_DMX512_HUART								50
 
 // Èí¼þ°æ±¾
-#define	SOFTWARE_VERSION_UINT32								0x00020100		//2.1.0
+#define	SOFTWARE_VERSION_UINT32								0x00020100		//2.1.1
 
 /* USER CODE END EM */
 
