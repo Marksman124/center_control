@@ -17,6 +17,7 @@
 
 //FLASH_ProcessTypeDef p_Flash; 
 uint16_t* p_Local_Address;			//	本地地址
+
 uint16_t* p_Software_Version_high;		//	软件版本
 uint16_t* p_Software_Version_low;		//	软件版本 低
 

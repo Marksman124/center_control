@@ -80,6 +80,14 @@ typedef union IntUint
 }IntUint;
 
 /* Exported constants --------------------------------------------------------*/
+
+
+//**************** 收发缓冲区
+extern uint8_t Metering_DMABuff[METERING_RS485_RX_BUFF_SIZE];//定义一个接收缓存区
+//extern uint8_t Metering_RxBuff[METERING_RS485_RX_BUFF_SIZE];//定义一个正真的接收数组
+extern uint8_t Metering_TxBuff[METERING_RS485_TX_BUFF_SIZE];//定义一个发送缓存区
+
+
 extern osMessageQId MeteringQueueHandle;
 
 

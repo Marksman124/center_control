@@ -25,6 +25,8 @@ typedef __IO uint16_t vu16;
 #define USER_FLASH_ADDR_END					FLASH_APP_PROGRAM_ADDR
 
 
+#define MODBUS_LOCAL_ADDRESS			(0xAA)
+
 
 extern uint16_t* p_Local_Address;			//	本地地址
 extern uint16_t* p_Baud_Rate;					//	波特率

@@ -255,6 +255,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
+#include "metering.h"
 
 /** @addtogroup STM32F1xx_HAL_Driver
   * @{
@@ -2650,8 +2651,18 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 
     if(__HAL_UART_GET_FLAG(huart,UART_FLAG_ORE) != RESET) 
     {
+			if (huart->Instance == UART4) //如果是串口4
+			{
+				memset(Metering_DMABuff,0,METERING_RS485_RX_BUFF_SIZE);    				//清空缓存区
+				__HAL_UART_CLEAR_IDLEFLAG(huart);               //清除标志位
+				HAL_UART_Receive_DMA(huart,Metering_DMABuff,METERING_RS485_RX_BUFF_SIZE);  //开DMA接收，数据存入rx_buffer数组中。
+
+			}
+			else
+			{
         __HAL_UART_CLEAR_OREFLAG(huart);
         HAL_UART_Receive_IT(huart,(uint8_t *)&i,1);
+			}
     }
 }
 

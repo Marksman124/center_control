@@ -26,7 +26,7 @@ UART_HandleTypeDef* p_Metering_Module_Huart = &huart4;
 
 //**************** 收发缓冲区
 uint8_t Metering_DMABuff[METERING_RS485_RX_BUFF_SIZE]={0};//定义一个接收缓存区
-uint8_t Metering_RxBuff[METERING_RS485_RX_BUFF_SIZE]={0};//定义一个正真的接收数组
+//uint8_t Metering_RxBuff[METERING_RS485_RX_BUFF_SIZE]={0};//定义一个正真的接收数组
 uint8_t Metering_TxBuff[METERING_RS485_TX_BUFF_SIZE]={0};//定义一个发送缓存区
 
 //**************** 轮询周期计数
@@ -431,6 +431,8 @@ void Metering_Receive_Init(void)
 #ifdef METERING_MODULE_HUART
 	//__HAL_UART_ENABLE_IT(p_Metering_Module_Huart, UART_IT_RXNE); //使能IDLE中断
 	__HAL_UART_ENABLE_IT(p_Metering_Module_Huart, UART_IT_IDLE);//使能idle中断
+	__HAL_UART_ENABLE_IT(p_Metering_Module_Huart, UART_IT_ERR);//
+	
   HAL_UART_Receive_DMA(p_Metering_Module_Huart,Metering_DMABuff,METERING_RS485_RX_BUFF_SIZE);//打开串口DMA接收
 	// 链接方式
 	p_Connection_Mode = Get_DataAddr_Pointer(MB_FUNC_READ_HOLDING_REGISTER,MB_DATA_ADDR_CONNECTION_MODE);

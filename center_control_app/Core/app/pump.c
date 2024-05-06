@@ -61,24 +61,18 @@ void Call_Current_Pump(void)
 	{
 		if(*p_Current_Pump_1 > AGREEMENT_CURRENT_PUMP_MAX)
 		{
-			*p_Current_Pump_1 = Current_Pump_1;
+			*p_Current_Pump_1 = AGREEMENT_CURRENT_PUMP_MAX;
 		}
-		else
-		{
-			Current_Pump_1 = *p_Current_Pump_1;
-		}
+		Current_Pump_1 = *p_Current_Pump_1;
 		StartUp_PWM1(Current_Pump_1);
 	}
 	if(Current_Pump_2 !=  *p_Current_Pump_2)
 	{
 		if(*p_Current_Pump_2 > AGREEMENT_CURRENT_PUMP_MAX)
 		{
-			*p_Current_Pump_2 = Current_Pump_2;
+			*p_Current_Pump_2 = AGREEMENT_CURRENT_PUMP_MAX;
 		}
-		else
-		{
-			Current_Pump_2 = *p_Current_Pump_2;
-		}
+		Current_Pump_2 = *p_Current_Pump_2;
 		StartUp_PWM2(Current_Pump_2);
 	}
 }
@@ -90,24 +84,18 @@ void Call_Voltage_Pump(void)
 	{
 		if(*p_Voltage_Pump_1 > AGREEMENT_VOLTAGE_PUMP_MAX)
 		{
-			*p_Voltage_Pump_1 = Voltage_Pump_1;
+			*p_Voltage_Pump_1 = AGREEMENT_VOLTAGE_PUMP_MAX;
 		}
-		else
-		{
-			Voltage_Pump_1 = *p_Voltage_Pump_1;
-		}
+		Voltage_Pump_1 = *p_Voltage_Pump_1;
 		StartUp_DAC1(Voltage_Pump_1);
 	}
 	if(Voltage_Pump_2 !=  *p_Voltage_Pump_2)
 	{
 		if(*p_Voltage_Pump_2 > AGREEMENT_VOLTAGE_PUMP_MAX)
 		{
-			*p_Voltage_Pump_2 = Voltage_Pump_2;
+			*p_Voltage_Pump_2 = AGREEMENT_VOLTAGE_PUMP_MAX;
 		}
-		else
-		{
-			Voltage_Pump_2 = *p_Voltage_Pump_2;
-		}
+		Voltage_Pump_2 = *p_Voltage_Pump_2;
 		StartUp_DAC2(Voltage_Pump_2);
 	}
 }
@@ -118,30 +106,21 @@ void Call_Gear_Pump(void)
 	{
 		if(*p_Gear_Pump_1 > AGREEMENT_GEAR_PUMP_MAX)
 		{
-			*p_Gear_Pump_1 = Gear_Pump_1;
+			*p_Gear_Pump_1 = AGREEMENT_GEAR_PUMP_MAX;
 		}
-		else
-		{
-			Gear_Pump_1 = *p_Gear_Pump_1;
-			//StartUp_KA1(Gear_Pump_1);
-		}
-		StartUp_KA1(Gear_Pump_1);
+		Gear_Pump_1 = *p_Gear_Pump_1;
 	}
-	//StartUp_KA1(Gear_Pump_1);
+	StartUp_KA1(Gear_Pump_1);
+	
 	if(Gear_Pump_2 !=  *p_Gear_Pump_2)
 	{
 		if(*p_Gear_Pump_2 > AGREEMENT_GEAR_PUMP_MAX)
 		{
-			*p_Gear_Pump_2 = Gear_Pump_2;
+			*p_Gear_Pump_2 = AGREEMENT_GEAR_PUMP_MAX;
 		}
-		else
-		{
-			Gear_Pump_2 = *p_Gear_Pump_2;
-			//StartUp_KA2(Gear_Pump_2);
-		}
-		StartUp_KA2(Gear_Pump_2);
+		Gear_Pump_2 = *p_Gear_Pump_2;
 	}
-	//StartUp_KA2(Gear_Pump_2);
+	StartUp_KA2(Gear_Pump_2);
 }
 
 void Call_PUMP_Handle_Task(void)

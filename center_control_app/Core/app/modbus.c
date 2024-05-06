@@ -11,7 +11,7 @@
 */
 /* Includes ------------------------------------------------------------------*/
 #include "modbus.h"
-
+#include "dev.h"
 /* ----------------------- Defines ------------------------------------------*/
 // 03
 #define REG_HOLDING_START               ( 1 )
@@ -96,6 +96,10 @@ HoldingCallOut( USHORT usAddress )
 		if( usAddress == MB_DATA_ADDR_METERING_MODULE_CLEAN )
 			usRegHoldingBuf[iRegIndex] = 0; // 写入1清零后该地址自动设置为 0 
 	}
+	else if(usAddress == MB_DATA_ADDR_SLAVE_ADDRESS) // 从机地址
+	{
+		Modbus_Init();
+	}
 	else if(usAddress == MB_DATA_ADDR_BAUD_RATE) // 设置波特率
 	{
 		__HAL_UART_DISABLE(p_huart_mb);
@@ -169,13 +173,13 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
             {
 							if((iRegIndex >= REG_DATA_ADDR_DMX512_START) && (iRegIndex <= REG_DATA_ADDR_DMX512_END))//DMX 小端
 							{
-								*pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] & 0xFF );
-								*pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] >> 8 );
+								*pucRegBuffer++ = ( unsigned char )( usRegHoldingBuf[iRegIndex] & 0xFF );
+								*pucRegBuffer++ = ( unsigned char )( usRegHoldingBuf[iRegIndex] >> 8 );
 							}
 							else
 							{
-								*pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] >> 8 );
-								*pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] & 0xFF );
+								*pucRegBuffer++ = ( unsigned char )( usRegHoldingBuf[iRegIndex] >> 8 );
+								*pucRegBuffer++ = ( unsigned char )( usRegHoldingBuf[iRegIndex] & 0xFF );
 							}
               iRegIndex++;
               usNRegs--;
@@ -356,7 +360,12 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
 void Modbus_Init(void)
 {
 	
-	eMBInit( MB_RTU, 0xAA, 0, 115200, MB_PAR_ODD);//初始化modbus，走modbusRTU，从站地址为0xAA，串口为2。
+	// 先写死 0xAA  wuqingguang
+	//if( (*p_Local_Address >= 0xFF) || (*p_Local_Address == 0) )
+	{
+		*p_Local_Address = MODBUS_LOCAL_ADDRESS;	// 默认 0xAA
+	}
+	eMBInit( MB_RTU, *p_Local_Address, 0, 115200, MB_PAR_ODD);//初始化modbus，走modbusRTU，从站地址为0xAA，串口为2。
 	eMBEnable(  );//使能modbus
 	
 }
