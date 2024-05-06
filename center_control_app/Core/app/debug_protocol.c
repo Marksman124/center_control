@@ -69,7 +69,10 @@ void Set_Debug_Protocol_Mode(uint8_t mode)
 	Debug_Send_Buffer[2] = 0x60;
 	Debug_Send_Buffer[3] = 0xDE;
 	Debug_Send_Buffer[4] = Debug_Protocol_Mode;
+	
+#ifdef DEBUG_HUART
 	HAL_UART_Transmit(p_huart_debug, Debug_Send_Buffer, 5,0xFFFF); //将收到的信息发送出去
+#endif
 }
 
 

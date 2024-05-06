@@ -39,7 +39,7 @@ extern "C" {
 #endif
 
 #define METERING_RS485_TX_BUFF_SIZE			8
-#define METERING_RS485_RX_BUFF_SIZE			16
+#define METERING_RS485_RX_BUFF_SIZE			100
 
 /*------------------- modbus dataAddr  ---------------------------------------*/
 #define METERING_ADDR_START 							( 0x0010 )

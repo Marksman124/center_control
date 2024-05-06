@@ -288,7 +288,6 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 0 */
 	
 #if DEBUG_HUART == 3
-	
 	uint32_t timeout = 0;
 	
 	HAL_UART_IRQHandler(&huart3);
