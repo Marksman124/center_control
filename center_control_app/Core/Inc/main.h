@@ -56,17 +56,20 @@ extern "C" {
 #define MODBUS_USART								2		//2  //(A3)  3备用
 #define	METERING_MODULE_HUART				4		//(A1) 	原来 1 
 #define	DMX512_HUART								1 	//(A2)	原来 4
+
+#if MODBUS_USART == 2
 #define	DEBUG_HUART									3 	//
+#endif
 
 #define	SYSTEM_USER_USART_MAX				5
 
 #define THREAD_PERIOD_MODBUS_USART								10
 #define THREAD_PERIOD_MAIN_PUMP_TASK							10
-#define	THREAD_PERIOD_METERING_MODULE_HUART				200
+#define	THREAD_PERIOD_METERING_MODULE_HUART				500
 #define	THREAD_PERIOD_DMX512_HUART								50
 
 // 软件版本
-#define	SOFTWARE_VERSION_UINT32								0x00022504		//2.37.4
+#define	SOFTWARE_VERSION_UINT32								0x00022505		//2.37.5
 
 /* USER CODE END EM */
 

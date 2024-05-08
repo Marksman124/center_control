@@ -76,6 +76,7 @@ extern void MB_Flash_Buffer_Write(void);
 extern uint16_t* Get_DataAddr_Pointer(UCHAR ucFunctionCode, USHORT addr);
 extern uint16_t Get_DataAddr_Value(UCHAR ucFunctionCode, USHORT addr);
 extern void Set_DataAddr_Value(UCHAR ucFunctionCode, USHORT addr, uint16_t value);
+extern void Set_DataValue_U32(UCHAR ucFunctionCode, USHORT addr, uint32_t value);
 	
 extern void Set_Dmx512_Data(uint8_t* p_buff, uint16_t len);
 extern uint8_t Get_Dmx512_Data_Change(void);

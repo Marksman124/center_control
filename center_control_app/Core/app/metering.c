@@ -49,8 +49,8 @@ uint16_t HoldingAddrTable[3][5][2] = {{{0x20,0xFFFF},{0x21,0x0002},{0x22,0x0006}
 
 uint16_t InputAddrTable[3][16][3] = {
 {
-{0x10,0x200E,100},	{0x12,0xFFFF,1},		{0x14,0x4000,10000},{0x16,0x4000,1000},
-{0x18,0x400A,1000},	{0x1A,0x2004,10000},{0x1C,0x2006,10000},{0x1E,0x2008,10000},
+{0x10,0x200E,100},	{0x12,0xFFFF,1},		{0x14,0x4000,10000},{0x16,0xFFFF,1000},
+{0x18,0xFFFF,1000},	{0x1A,0x2004,10000},{0x1C,0xFFFF,10000},{0x1E,0xFFFF,10000},
 {0x20,0x200A,1000},	{0x22,0x2000,10000},{0x24,0x2002,10000},{0x26,0xFFFF,10},
 {0x28,0xFFFF,1000},	{0x2A,0xFFFF,10},		{0x2C,0xFFFF,1000},	{0x2E,0xFFFF,1000},
 },
@@ -215,11 +215,8 @@ void Set_PowerSum(void)
 	negative = (high)<<16 | (low);
 	
 	sum = positive + negative;
-	high = sum >> 16;
-	low = sum & 0xFFFF;
 	
-	Set_DataAddr_Value( MB_FUNC_READ_INPUT_REGISTER, 0x14,  high);
-	Set_DataAddr_Value( MB_FUNC_READ_INPUT_REGISTER, 0x15,  low);
+	Set_DataValue_U32( MB_FUNC_READ_INPUT_REGISTER, 0x14,  sum);
 }
 /*-------------------- 收发处理 ----------------------------------------------*/
 //发送
@@ -262,8 +259,7 @@ void Metering_RxData(uint8_t len)
 
 			value_data.i = (int)(float_uint.f * InputAddrTable[(*p_Connection_Mode)-1][Metering_PERIODIC_CNT][2]);
 			
-			Set_DataAddr_Value( write_function, write_addr, value_data.c>>16 );
-			Set_DataAddr_Value( write_function, write_addr+1, value_data.c&0xFFFF );
+			Set_DataValue_U32( write_function, write_addr, value_data.c );
 			
 			if( (metering_addr == 0x1028) && ((*p_Connection_Mode) >= THREE_PHASE_THREE_WIRE) )//计算总有功电能 & 三相有效
 			{

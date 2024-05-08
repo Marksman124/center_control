@@ -128,6 +128,7 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 	
     if( usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS )
     {
+			taskENTER_CRITICAL();
         //iRegIndex = ( int )( usAddress - usRegInputStart );
 				iRegIndex = ( int )( usAddress );
         while( usNRegs > 0 )
@@ -145,6 +146,7 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 					iRegIndex++;
 					usNRegs--;
         }
+				taskEXIT_CRITICAL();
     }
     else
     {
@@ -169,6 +171,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
         switch ( eMode )
         {
         case MB_REG_READ:
+					taskENTER_CRITICAL();
             while( usNRegs > 0 )
             {
 							if((iRegIndex >= REG_DATA_ADDR_DMX512_START) && (iRegIndex <= REG_DATA_ADDR_DMX512_END))//DMX 小端
@@ -184,12 +187,13 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
               iRegIndex++;
               usNRegs--;
             }
+						taskEXIT_CRITICAL();
             break;
 
         case MB_REG_WRITE:
+					taskENTER_CRITICAL();
             while( usNRegs > 0 )
             {
-							
 							if((iRegIndex >= REG_DATA_ADDR_DMX512_START) && (iRegIndex <= REG_DATA_ADDR_DMX512_END))//DMX 小端
 							{
 								usRegHoldingBuf[iRegIndex] = *pucRegBuffer++;
@@ -211,7 +215,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
 							iRegIndex++;
               usNRegs--;
             }
-						
+						taskEXIT_CRITICAL();
 						if(Check_Need_CallOut(usAddress))
 						{
 							HoldingCallOut(usAddress);
@@ -245,10 +249,12 @@ eMBRegFileCB( UCHAR * pucRegBuffer, USHORT fileNumber, USHORT fileLength,
 		case MB_REG_WRITE:
 			if(fileNumber == REG_FILE_NUMBER_STAR) // 起始包
 			{OTA_Pack_Len = 0;}
-						
+			
+			taskENTER_CRITICAL();
 			write_addr = (FLASH_APP_PATCH_ADDR + OTA_Pack_Len);
 			iap_write_appbin(write_addr,pucRegBuffer,fileLength);
 			OTA_Pack_Len += (fileLength*2);
+			taskEXIT_CRITICAL();
 			
 			if(fileNumber == REG_FILE_NUMBER_END)//最后一帧
 			{
@@ -471,6 +477,14 @@ void Set_DataAddr_Value(UCHAR ucFunctionCode, USHORT addr, uint16_t value)
 	}
 }
 
+void Set_DataValue_U32(UCHAR ucFunctionCode, USHORT addr, uint32_t value)
+{
+	//taskENTER_CRITICAL();
+	Set_DataAddr_Value( ucFunctionCode, addr, value>>16 );
+	Set_DataAddr_Value( ucFunctionCode, addr+1, value&0xFFFF );
+	//taskEXIT_CRITICAL();
+}
+
 
 void Set_Dmx512_Data(uint8_t* p_buff, uint16_t len)
 {
@@ -478,7 +492,7 @@ void Set_Dmx512_Data(uint8_t* p_buff, uint16_t len)
 	sum = len/2;
 	if(len%2)
 		sum++;
-
+	taskENTER_CRITICAL();
 	for(i=0,j=0; i<sum; i++,j+=2)
 	{
 		if( (REG_DATA_ADDR_DMX512_START+i) > REG_DATA_ADDR_DMX512_END )
@@ -486,6 +500,7 @@ void Set_Dmx512_Data(uint8_t* p_buff, uint16_t len)
 		usRegHoldingBuf[REG_DATA_ADDR_DMX512_START+i] = *(p_buff+j) << 8;
 		usRegHoldingBuf[REG_DATA_ADDR_DMX512_START+i] |= *(p_buff+j+1);
 	}
+	taskEXIT_CRITICAL();
 }
 
 
