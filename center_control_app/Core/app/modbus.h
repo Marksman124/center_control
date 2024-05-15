@@ -25,11 +25,12 @@ extern "C" {
 #include "usart.h"
 #include "iap.h"
 #include "string.h"
+#include "gpio.h"
 
 #include "metering.h" // 消息队列
 /* Private defines -----------------------------------------------------------*/
 
-// 03
+// 03 Holding
 
 #define MB_DATA_ADDR_SLAVE_ADDRESS					( 0x0 )
 #define MB_DATA_ADDR_BAUD_RATE             	( 0x1 )
@@ -45,11 +46,15 @@ extern "C" {
 #define MB_DATA_ADDR_METERING_MODULE_ADDR   	( 0x22 )
 #define MB_DATA_ADDR_METERING_MODULE_BAUD   	( 0x23 )
 #define MB_DATA_ADDR_METERING_MODULE_FORMAT   ( 0x24 )
+
+#define MB_DATA_ADDR_IO_HARDWARE_CTRL   		( 0x25 )
 //------- DMX
 #define REG_DATA_ADDR_DMX512_LENTH 					( 0x30 )
 #define REG_DATA_ADDR_DMX512_START 					( 0x40 )
 #define REG_DATA_ADDR_DMX512_END 						( 0x013F )
-// 04
+
+
+// 04 Input
 #define MB_DATA_ADDR_SOFTWARE_VERSION_HIGH       	( 0x00 )
 #define MB_DATA_ADDR_SOFTWARE_VERSION_LOW        	( 0x01 )
 #define MB_DATA_ADDR_WATER_LEVEL_SWITCH_STATE     ( 0x02 )

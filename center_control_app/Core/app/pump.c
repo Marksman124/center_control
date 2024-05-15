@@ -110,7 +110,7 @@ void Call_Gear_Pump(void)
 		}
 		Gear_Pump_1 = *p_Gear_Pump_1;
 	}
-	StartUp_KA1(Gear_Pump_1);
+	StartUp_Pump(0, Gear_Pump_1);
 	
 	if(Gear_Pump_2 !=  *p_Gear_Pump_2)
 	{
@@ -120,7 +120,7 @@ void Call_Gear_Pump(void)
 		}
 		Gear_Pump_2 = *p_Gear_Pump_2;
 	}
-	StartUp_KA2(Gear_Pump_2);
+	StartUp_Pump(1, Gear_Pump_2);
 }
 
 void Call_PUMP_Handle_Task(void)
@@ -145,8 +145,8 @@ void PUMP_Hardware_Debug(void)
 //		StartUp_DAC1(AGREEMENT_VOLTAGE_PUMP_MAX/2);
 //		StartUp_DAC2(AGREEMENT_VOLTAGE_PUMP_MAX/2);
 //		
-//		StartUp_KA1(0xFF);
-//		StartUp_KA2(0xFF);
+//		StartUp_Pump(0, 0xFF);
+//		StartUp_Pump(1, 0xFF);
 //	}
 //	else if( Pump_Hardware_Debug_Cnt == 1000)
 //	{
@@ -156,8 +156,8 @@ void PUMP_Hardware_Debug(void)
 		StartUp_DAC1(AGREEMENT_VOLTAGE_PUMP_MAX);
 		StartUp_DAC2(AGREEMENT_VOLTAGE_PUMP_MAX);
 		
-		StartUp_KA1(4);
-		StartUp_KA2(4);
+		StartUp_Pump(0,4);
+		StartUp_Pump(1,4);
 //	}
 //	else if( Pump_Hardware_Debug_Cnt == 0)
 //	{
@@ -169,8 +169,8 @@ void PUMP_Hardware_Debug(void)
 //		StartUp_DAC1(0);
 //		StartUp_DAC2(0);
 //		
-//		StartUp_KA1(0);
-//		StartUp_KA2(0);
+//		StartUp_Pump(0,0);
+//		StartUp_Pump(1,0);
 //	}
 	
 	if(Pump_Hardware_Debug_Cnt++ > 1501)

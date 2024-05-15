@@ -34,6 +34,12 @@ extern "C" {
 
 /* USER CODE BEGIN Private defines */
 
+typedef struct IO_Hardware_Info
+{
+	GPIO_TypeDef * io_type;
+	uint16_t io_pin;
+}IO_Hardware_Info;
+
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);
@@ -43,8 +49,10 @@ extern void led_show(uint16_t num, uint16_t time);
 extern void led_on(void);
 extern void led_off(void);
 	
-extern void StartUp_KA1(uint16_t para);
-extern void StartUp_KA2(uint16_t para);
+extern void StartUp_Pump(uint8_t num, uint16_t para);
+
+extern void IO_Hardware_Ctrl_All(uint16_t para);
+extern void IO_Hardware_Ctrl_One(uint8_t num, uint8_t value);
 
 /* USER CODE END Prototypes */
 

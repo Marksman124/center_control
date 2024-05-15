@@ -202,6 +202,7 @@ void Main_Handler(void const * argument)
 	
 	Call_PUMP_Handle_Init();
 	Set_Software_Version(SOFTWARE_VERSION_UINT32);
+	
   /* Infinite loop */
   while(1)
   {
@@ -210,9 +211,11 @@ void Main_Handler(void const * argument)
 		PUMP_Hardware_Debug();
 #else
 		Call_PUMP_Handle_Task();
+		StartUp_Pump(0, 1);
 #endif
 		osDelay(THREAD_PERIOD_MAIN_PUMP_TASK);
   }
+	
   /* USER CODE END Main_Handler */
 }
 

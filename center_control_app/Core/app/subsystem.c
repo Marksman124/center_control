@@ -54,6 +54,8 @@ void Subsystem_Handler_Task(void)
 		Subsystem_Task_Counter = 0;
 		//协议解析 计量模块
 		Metering_Protocol_Analysis();
+		
+		Set_Dmx512_Data_Change(1);	//	自动发送
 	}
 	Subsystem_Task_Counter ++;
 }

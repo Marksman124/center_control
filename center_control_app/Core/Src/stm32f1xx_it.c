@@ -290,8 +290,9 @@ void USART3_IRQHandler(void)
 #if DEBUG_HUART == 3
 	uint32_t timeout = 0;
 	
-	HAL_UART_IRQHandler(&huart3);
   /* USER CODE END USART3_IRQn 0 */
+  HAL_UART_IRQHandler(&huart3);
+  /* USER CODE BEGIN USART3_IRQn 1 */
 	timeout = 0;
 		while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY) //等待就绪
 		{
@@ -320,7 +321,6 @@ void USART3_IRQHandler(void)
 				break;
 			}
 		}
-  /* USER CODE BEGIN USART3_IRQn 1 */
 #elif MODBUS_USART == 3
 	if(__HAL_UART_GET_IT_SOURCE(&huart3, UART_IT_RXNE)!= RESET) 
 		{
@@ -390,9 +390,9 @@ void UART5_IRQHandler(void)
 	
 	uint32_t timeout = 0;
 	
-	HAL_UART_IRQHandler(&huart5);
   /* USER CODE END UART5_IRQn 0 */
-	
+  HAL_UART_IRQHandler(&huart5);
+  /* USER CODE BEGIN UART5_IRQn 1 */
 	timeout = 0;
 		while (HAL_UART_GetState(&huart5) != HAL_UART_STATE_READY) //等待就绪
 		{
@@ -421,7 +421,6 @@ void UART5_IRQHandler(void)
 				break;
 			}
 		}
-  /* USER CODE BEGIN UART5_IRQn 1 */
 #elif MODBUS_USART == 5
 	if(__HAL_UART_GET_IT_SOURCE(&huart5, UART_IT_RXNE)!= RESET) 
 		{
@@ -437,6 +436,20 @@ void UART5_IRQHandler(void)
 	HAL_UART_IRQHandler(&huart5);
 #endif
   /* USER CODE END UART5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 channel3 global interrupt.
+  */
+void DMA2_Channel3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart4_rx);
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
