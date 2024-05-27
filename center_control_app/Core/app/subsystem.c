@@ -17,7 +17,7 @@
 #include "dmx512.h"
 #include "gpio.h"
 
-uint16_t Subsystem_Task_Counter=0;
+uint32_t Subsystem_Task_Counter=0;
 
 void Subsystem_Init(void)
 {
@@ -49,13 +49,19 @@ void Subsystem_Handler_Task(void)
 #else
 	Dmx512_Protocol_Analysis();
 #endif
-	if( Subsystem_Task_Counter > (THREAD_PERIOD_METERING_MODULE_HUART/THREAD_PERIOD_DMX512_HUART))
+	if(( Subsystem_Task_Counter % (THREAD_PERIOD_METERING_MODULE_HUART/THREAD_PERIOD_DMX512_HUART))==0)
 	{
-		Subsystem_Task_Counter = 0;
+		//Subsystem_Task_Counter = 0;
 		//协议解析 计量模块
 		Metering_Protocol_Analysis();
 		
+		//Set_Dmx512_Data_Change(1);	//	自动发送
+	}
+	if( Subsystem_Task_Counter > (THREAD_PERIOD_DMX512_AUTO_SEND/THREAD_PERIOD_DMX512_HUART))
+	{
+		Subsystem_Task_Counter = 0;
 		Set_Dmx512_Data_Change(1);	//	自动发送
 	}
+	
 	Subsystem_Task_Counter ++;
 }
