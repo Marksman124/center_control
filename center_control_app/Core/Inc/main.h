@@ -72,7 +72,7 @@ extern "C" {
 
 
 // Èí¼þ°æ±¾
-#define	SOFTWARE_VERSION_UINT32								0x00022506		//2.37.6
+#define	SOFTWARE_VERSION_UINT32								0x00022B00		//2.43.0
 
 /* USER CODE END EM */
 
